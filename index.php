@@ -4,4 +4,4 @@ echo "trans.localhost";
 
 ?>
 
-asdfasdfasdfasdfa
+asdfasdf
