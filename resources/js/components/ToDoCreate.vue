@@ -14,6 +14,10 @@
                             <label>Description</label>
                             <textarea v-model="form.description" type="text" name="description" class="form-control" ></textarea>
                         </div>
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input v-model="form.due_at" type="date" placeholder="dd-mm-yyyy" name="due_at" class="form-control" >
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-success" @click.prevent="store">Save</button>

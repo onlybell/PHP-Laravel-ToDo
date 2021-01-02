@@ -14,9 +14,10 @@ class ToDo extends Model
         'user_id',
         'title',
         'description',
+        'due_at',
         'completed',
+        'completed_dt',
         'created_at',
         'updated_at',
-        'completed_dt',
     ];
 }

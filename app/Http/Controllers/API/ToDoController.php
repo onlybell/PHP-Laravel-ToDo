@@ -24,14 +24,7 @@ class ToDoController extends Controller
 
     public function index()
     {
-        $loginUser = "";
-        if (Auth::check()) {
-            $loginUser = Auth::user();
-            Log::alert('------------------------->'.$loginUser);
-        }
-        else {
-            Log::alert('------------------------->1111'.Auth::user());
-        }
+        Log::alert('------------------------->1111'.Auth::id());
 
         $todos = ToDo::latest()->where('user_id', '=', 1)->paginate(10);
         
@@ -51,7 +44,8 @@ class ToDoController extends Controller
             $request->all(),
             [
                 "title" => ["required"],
-                "description" => ["required"]
+                "description" => ["required"],
+                "due_at" => ["required"]
             ]
         );
 
@@ -66,6 +60,7 @@ class ToDoController extends Controller
             'user_id' => 1,
             'title'=> $request['title'],
             'description'=> $request['description'],
+            'due_at'=> $request['due_at'],
         ]);
 
         return response()->json(['status' => true]);

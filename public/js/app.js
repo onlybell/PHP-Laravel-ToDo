@@ -2003,6 +2003,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {},
@@ -37852,6 +37856,36 @@ var render = function() {
                   }
                 }
               })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", [_vm._v("Due Date")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.due_at,
+                    expression: "form.due_at"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: {
+                  type: "date",
+                  placeholder: "dd-mm-yyyy",
+                  name: "due_at"
+                },
+                domProps: { value: _vm.form.due_at },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.form, "due_at", $event.target.value)
+                  }
+                }
+              })
             ])
           ]),
           _vm._v(" "),
@@ -37920,39 +37954,21 @@ var render = function() {
                 "tbody",
                 _vm._l(_vm.todos.data, function(todo) {
                   return _c("tr", { key: todo.id }, [
-                    _c("td", [_vm._v(_vm._s(todo.id))]),
-                    _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(todo.title))]),
                     _vm._v(" "),
-                    _c("td", [
-                      _c("textarea", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: todo.description,
-                            expression: "todo.description"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        attrs: {
-                          type: "text",
-                          name: "description",
-                          readonly: ""
-                        },
-                        domProps: { value: todo.description },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.$set(todo, "description", $event.target.value)
-                          }
-                        }
-                      })
+                    _c("td", { staticStyle: { "text-align": "center" } }, [
+                      _vm._v(_vm._s(todo.due_at))
                     ]),
                     _vm._v(" "),
-                    _c("td")
+                    _c("td", { staticStyle: { "text-align": "center" } }, [
+                      _vm._v(_vm._s(todo.completed))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticStyle: { "text-align": "center" } }, [
+                      _vm._v(
+                        "\n                                Edit / Complete / Delete\n                            "
+                      )
+                    ])
                   ])
                 }),
                 0
@@ -37971,13 +37987,21 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
-        _c("th", [_vm._v("ID")]),
+        _c("th", { staticStyle: { width: "500px", "text-align": "center" } }, [
+          _vm._v("Title")
+        ]),
         _vm._v(" "),
-        _c("th", [_vm._v("Title")]),
+        _c("th", { staticStyle: { width: "200px", "text-align": "center" } }, [
+          _vm._v("Due Date")
+        ]),
         _vm._v(" "),
-        _c("th", [_vm._v("Description")]),
+        _c("th", { staticStyle: { width: "200px", "text-align": "center" } }, [
+          _vm._v("Completed")
+        ]),
         _vm._v(" "),
-        _c("th", [_vm._v("Action")])
+        _c("th", { staticStyle: { "text-align": "center" } }, [
+          _vm._v("Action")
+        ])
       ])
     ])
   }

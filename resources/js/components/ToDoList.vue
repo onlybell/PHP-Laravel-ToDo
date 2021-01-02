@@ -9,19 +9,19 @@
                         <table class="table table-hover">
                         <thead>
                             <tr>
-                            <th>ID</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Action</th>
+                            <th style='width:500px; text-align:center;'>Title</th>
+                            <th style='width:200px; text-align:center;'>Due Date</th>
+                            <th style='width:200px; text-align:center;'>Completed</th>
+                            <th style='text-align:center;'>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="todo in todos.data" :key="todo.id">
-                                <td>{{todo.id}}</td>
                                 <td>{{todo.title}}</td>
-                                <td><textarea v-model="todo.description" type="text" name="description" class="form-control" readonly></textarea></td>
-                                <td>
-                                    
+                                <td style='text-align:center;'>{{todo.due_at}}</td>
+                                <td style='text-align:center;'>{{todo.completed}}</td>
+                                <td style='text-align:center;'>
+                                    Edit / Complete / Delete
                                 </td>
                             </tr>
                         </tbody>
