@@ -5,6 +5,7 @@ Vue.use(vueRouter);
 
 import Dashboard from "./components/Dashboard";
 import ToDoList from "./components/ToDoList";
+import ToDoCreate from "./components/ToDoCreate";
 
 const routes = [
     {
@@ -14,6 +15,10 @@ const routes = [
     {
         path: "/todolist",
         component: ToDoList
+    },
+    {
+        path: "/todocreate",
+        component: ToDoCreate
     }
 ];
 
