@@ -2030,6 +2030,7 @@ __webpack_require__.r(__webpack_exports__);
       this.loading = true;
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/todos', this.form, {
         headers: {
+          'x-csrf-token': document.querySelectorAll('meta[name=csrf-token]')[0].getAttributeNode('content').value,
           "Content-type": "application/json"
         }
       }).then(function (res) {
@@ -37718,9 +37719,7 @@ var staticRenderFns = [
       _c("div", { staticClass: "row justify-content-center" }, [
         _c("div", { staticClass: "col-md-12" }, [
           _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("Example Component")
-            ]),
+            _c("div", { staticClass: "card-header" }, [_vm._v("Dashboard")]),
             _vm._v(" "),
             _c("div", { staticClass: "card-body" }, [
               _vm._v("\n                    Dashboard\n                ")
@@ -37803,7 +37802,7 @@ var render = function() {
     _c("div", { staticClass: "row justify-content-center" }, [
       _c("div", { staticClass: "col-md-12" }, [
         _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [_vm._v("To-Do Create")]),
+          _c("div", { staticClass: "card-header" }, [_vm._v("To-Do Create ")]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
             _c("div", { staticClass: "form-group" }, [
@@ -37871,11 +37870,8 @@ var render = function() {
                   }
                 ],
                 staticClass: "form-control",
-                attrs: {
-                  type: "date",
-                  placeholder: "dd-mm-yyyy",
-                  name: "due_at"
-                },
+                staticStyle: { width: "220px" },
+                attrs: { type: "date", name: "due_at" },
                 domProps: { value: _vm.form.due_at },
                 on: {
                   input: function($event) {

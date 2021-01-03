@@ -50,7 +50,7 @@
                 axios.get('/api/todolist')
                 .then(res => {
                     this.todos = res.data;
-                    setTimeout(() => {
+                    setTimeout(() => { 
                         this.loading = false;
                     }, 500)
                 })

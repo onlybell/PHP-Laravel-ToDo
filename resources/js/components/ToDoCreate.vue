@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">To-Do Create</div>
+                    <div class="card-header">To-Do Create </div>
 
                     <div class="card-body">
                        <div class="form-group">
@@ -16,7 +16,7 @@
                         </div>
                         <div class="form-group">
                             <label>Due Date</label>
-                            <input v-model="form.due_at" type="date" placeholder="dd-mm-yyyy" name="due_at" class="form-control" >
+                            <input v-model="form.due_at" type="date" name="due_at" class="form-control" style="width:220px;">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -24,7 +24,7 @@
                         <a class="btn btn-primary" href="/todolist" role="button">Cancel</a>
                     </div>
                 </div>
-            </div>
+            </div>  
         </div>
     </div>
 </template>
@@ -50,6 +50,7 @@
                 this.loading = true;
                 axios.post('/api/todos', this.form, {
                     headers: {
+                        'x-csrf-token': document.querySelectorAll('meta[name=csrf-token]')[0].getAttributeNode('content').value,
                         "Content-type": "application/json"
                     }
                 })

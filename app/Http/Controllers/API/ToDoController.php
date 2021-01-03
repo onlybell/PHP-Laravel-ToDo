@@ -4,11 +4,12 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\ToDo;
+use App\Models\User;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
+use Auth;
+use Log;
+use Validator;
 
 class ToDoController extends Controller
 {
@@ -24,10 +25,21 @@ class ToDoController extends Controller
 
     public function index()
     {
-        Log::alert('------------------------->1111'.Auth::id());
+        $loginUser = Auth::user();
 
-        $todos = ToDo::latest()->where('user_id', '=', 1)->paginate(10);
+        // $user = Auth::user();
+
+        Log::alert('------------------------->'.$loginUser);
+
+        // dd(
+        //     auth()->id() ?? '?',
+        //     Auth::id() ?? '?',
+        //     $request->user()->id ?? '?',
+        //     auth()->check(),
+        //     get_class(auth()->guard())
+        // );
         
+        $todos = ToDo::latest()->where('user_id', '=', 1)->paginate(10);
         
         return $todos;
     }
@@ -56,14 +68,15 @@ class ToDoController extends Controller
             ];
         }
 
+        $id = $request->user()->id;
+
         ToDo::create([
-            'user_id' => 1,
+            'user_id' => $id,
             'title'=> $request['title'],
             'description'=> $request['description'],
             'due_at'=> $request['due_at'],
         ]);
 
         return response()->json(['status' => true]);
-
     }
 }
