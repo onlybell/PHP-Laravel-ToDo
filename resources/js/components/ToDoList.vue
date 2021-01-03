@@ -46,12 +46,7 @@
         },
         methods: {
             loadTodos() {
-                axios.get('/api/todolist/',
-                {
-                    params: {
-                        id: this.$route.params.id
-                    }
-                })
+                axios.get('/api/todolist/')
                 .then(res => {
                     this.todos = res.data;
                     setTimeout(() => { 

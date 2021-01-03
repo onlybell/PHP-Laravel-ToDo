@@ -9,11 +9,11 @@ import ToDoCreate from "./components/ToDoCreate";
 
 const routes = [
     {
-        path: "/dashboard/:id",
+        path: "/dashboard/",
         component: Dashboard
     },
     {
-        path: "/todolist/:id",
+        path: "/todolist/",
         component: ToDoList
     },
     {

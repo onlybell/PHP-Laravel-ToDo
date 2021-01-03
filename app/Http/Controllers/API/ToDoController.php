@@ -13,6 +13,7 @@ use Validator;
 
 class ToDoController extends Controller
 {
+    protected $user_id;
     /**
      * Create a new controller instance.
      *
@@ -20,26 +21,15 @@ class ToDoController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('auth:api');
+        $this->middleware('auth:api');
+        
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        $loginUser = $request['id'];
+        $this->user_id = Auth::id();
 
-        // $user = Auth::user();
-
-        Log::alert('------------------------->'.$loginUser);
-
-        // dd(
-        //     auth()->id() ?? '?',
-        //     Auth::id() ?? '?',
-        //     $request->user()->id ?? '?',
-        //     auth()->check(),
-        //     get_class(auth()->guard())
-        // );
-        
-        $todos = ToDo::latest()->where('user_id', '=', 1)->paginate(10);
+        $todos = ToDo::latest()->where('user_id', '=', $this->user_id)->paginate(10);
         
         return $todos;
     }
@@ -52,6 +42,8 @@ class ToDoController extends Controller
      */
     public function store(Request $request)
     {
+        $this->user_id = Auth::id();
+
         $validator = Validator::make(
             $request->all(),
             [
@@ -68,10 +60,8 @@ class ToDoController extends Controller
             ];
         }
 
-        $id = $request->user()->id;
-
-        ToDo::create([
-            'user_id' => 1,
+        $todo = ToDo::create([
+            'user_id' => $this->user_id,
             'title'=> $request['title'],
             'description'=> $request['description'],
             'due_at'=> $request['due_at'],

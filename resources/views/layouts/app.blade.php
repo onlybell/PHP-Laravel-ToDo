@@ -36,9 +36,9 @@
                         @guest
 
                         @else
-                        <a class="btn btn-success" href="{{ url('/dashboard') }}/{{ Auth::user()->id }}" role="button">{{ __('Dashboard') }}</a> &nbsp; &nbsp;
+                        <a class="btn btn-success" href="{{ url('/dashboard') }}" role="button">{{ __('Dashboard') }}</a> &nbsp; &nbsp;
                         <a class="btn btn-primary" href="{{ url('/todocreate') }}" role="button">{{ __('New Task') }}</a> &nbsp; &nbsp;
-                        <a class="btn btn-primary" href="{{ url('/todolist') }}/{{ Auth::user()->id }}" role="button">{{ __('To-Do List') }}</a>
+                        <a class="btn btn-primary" href="{{ url('/todolist') }}" role="button">{{ __('To-Do List') }}</a>
                         @endguest
                     </ul>
 

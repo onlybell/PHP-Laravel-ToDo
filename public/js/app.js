@@ -2105,11 +2105,7 @@ __webpack_require__.r(__webpack_exports__);
     loadTodos: function loadTodos() {
       var _this = this;
 
-      axios.get('/api/todolist/', {
-        params: {
-          id: this.$route.params.id
-        }
-      }).then(function (res) {
+      axios.get('/api/todolist/').then(function (res) {
         _this.todos = res.data;
         setTimeout(function () {
           _this.loading = false;
@@ -53641,10 +53637,10 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_router__WEBPACK_IMPORTED_MODU
 
 
 var routes = [{
-  path: "/dashboard/:id",
+  path: "/dashboard/",
   component: _components_Dashboard__WEBPACK_IMPORTED_MODULE_2__["default"]
 }, {
-  path: "/todolist/:id",
+  path: "/todolist/",
   component: _components_ToDoList__WEBPACK_IMPORTED_MODULE_3__["default"]
 }, {
   path: "/todocreate",
