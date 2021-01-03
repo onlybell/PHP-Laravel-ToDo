@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">To-Do List</div>
+                    <div class="card-header">To-Do List {{ $route.params.id }}</div>
 
                     <div class="card-body table-responsive p-0">
                         <table class="table table-hover">
@@ -45,9 +45,13 @@
             this.loadTodos();
         },
         methods: {
-
             loadTodos() {
-                axios.get('/api/todolist')
+                axios.get('/api/todolist/',
+                {
+                    params: {
+                        id: this.$route.params.id
+                    }
+                })
                 .then(res => {
                     this.todos = res.data;
                     setTimeout(() => { 

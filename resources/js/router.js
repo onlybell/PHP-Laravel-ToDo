@@ -9,11 +9,11 @@ import ToDoCreate from "./components/ToDoCreate";
 
 const routes = [
     {
-        path: "/dashboard",
+        path: "/dashboard/:id",
         component: Dashboard
     },
     {
-        path: "/todolist",
+        path: "/todolist/:id",
         component: ToDoList
     },
     {
@@ -21,8 +21,8 @@ const routes = [
         component: ToDoCreate
     }
 ];
-
+ 
 export default new vueRouter({
     mode: "history",
-    routes
+    routes 
 });

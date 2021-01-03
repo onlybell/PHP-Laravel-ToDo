@@ -19,10 +19,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::namespace('App\\Http\\Controllers\\API')->group(function () {
-    Route::get('todolist', 'ToDoController@index');
-    Route::post('todos', 'ToDoController@store');
+        Route::get('todolist', 'ToDoController@index');
+        Route::post('todos', 'ToDoController@store');
 
-    Route::apiResources([
-        'todo' => 'ToDoController',
-    ]);
+        Route::apiResources([
+            'todo' => 'ToDoController',
+        ]);
 });

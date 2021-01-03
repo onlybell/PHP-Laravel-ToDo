@@ -2105,7 +2105,11 @@ __webpack_require__.r(__webpack_exports__);
     loadTodos: function loadTodos() {
       var _this = this;
 
-      axios.get('/api/todolist').then(function (res) {
+      axios.get('/api/todolist/', {
+        params: {
+          id: this.$route.params.id
+        }
+      }).then(function (res) {
         _this.todos = res.data;
         setTimeout(function () {
           _this.loading = false;
@@ -37940,7 +37944,9 @@ var render = function() {
     _c("div", { staticClass: "row justify-content-center" }, [
       _c("div", { staticClass: "col-md-12" }, [
         _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [_vm._v("To-Do List")]),
+          _c("div", { staticClass: "card-header" }, [
+            _vm._v("To-Do List " + _vm._s(_vm.$route.params.id))
+          ]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body table-responsive p-0" }, [
             _c("table", { staticClass: "table table-hover" }, [
@@ -53635,10 +53641,10 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_router__WEBPACK_IMPORTED_MODU
 
 
 var routes = [{
-  path: "/dashboard",
+  path: "/dashboard/:id",
   component: _components_Dashboard__WEBPACK_IMPORTED_MODULE_2__["default"]
 }, {
-  path: "/todolist",
+  path: "/todolist/:id",
   component: _components_ToDoList__WEBPACK_IMPORTED_MODULE_3__["default"]
 }, {
   path: "/todocreate",

@@ -23,9 +23,9 @@ class ToDoController extends Controller
         //$this->middleware('auth:api');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $loginUser = Auth::user();
+        $loginUser = $request['id'];
 
         // $user = Auth::user();
 
@@ -71,7 +71,7 @@ class ToDoController extends Controller
         $id = $request->user()->id;
 
         ToDo::create([
-            'user_id' => $id,
+            'user_id' => 1,
             'title'=> $request['title'],
             'description'=> $request['description'],
             'due_at'=> $request['due_at'],
