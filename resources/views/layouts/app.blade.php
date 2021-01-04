@@ -23,7 +23,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/dashboard') }}">
+                <a class="navbar-brand" href="#">
                     {{ config('app.name', 'To-Do') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -36,9 +36,9 @@
                         @guest
 
                         @else
-                        <a class="btn btn-success" href="{{ url('/dashboard') }}" role="button">{{ __('Dashboard') }}</a> &nbsp; &nbsp;
-                        <a class="btn btn-primary" href="{{ url('/todocreate') }}" role="button">{{ __('New Task') }}</a> &nbsp; &nbsp;
-                        <a class="btn btn-primary" href="{{ url('/todolist') }}" role="button">{{ __('To-Do List') }}</a>
+                        <router-link to="/dashboard" role="button" class="btn btn-success">Dashboard</router-link> &nbsp; &nbsp;
+                        <router-link to="/todocreate" role="button" class="btn btn-primary">New Task</router-link> &nbsp; &nbsp;
+                        <router-link to="/todolist" role="button" class="btn btn-primary">To-Do List</router-link>
                         @endguest
                     </ul>
 

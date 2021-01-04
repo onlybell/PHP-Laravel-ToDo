@@ -6,22 +6,23 @@
                     <div class="card-header">To-Do Create </div>
 
                     <div class="card-body">
-                       <div class="form-group">
+                        <div class="form-group">
                             <label>Title</label>
-                            <input v-model="form.title" type="text" name="title" class="form-control" >
+                            <input v-model="form.title" type="text" name="title" id="title" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <textarea v-model="form.description" type="text" name="description" class="form-control" ></textarea>
+                            <textarea v-model="form.description" type="text" name="description" class="form-control"></textarea>
                         </div>
                         <div class="form-group">
                             <label>Due Date</label>
                             <input v-model="form.due_at" type="date" name="due_at" class="form-control" style="width:220px;">
                         </div>
                     </div>
+
                     <div class="modal-footer">
                         <button class="btn btn-success" @click.prevent="store">Save</button>
-                        <a class="btn btn-primary" href="/todolist" role="button">Cancel</a>
+                        <router-link to="/todolist" role="button" class="btn btn-primary">Cancel</router-link>
                     </div>
                 </div>
             </div>  
@@ -29,28 +30,32 @@
     </div>
 </template>
 
-<script>
-    import axios from 'axios';
-
+<script> 
+    import axios from 'axios'; 
+    
     export default {
         components: {},
         data: () => ({
             form: {
                 title: "",
-                desc: ""
+                description: "",
+                due_at: ""
             },
             loading: false,
-            error: false
+            error: false,
         }),
         mounted() {
             console.log('Component mounted.')
         },
         methods: {
+           
             store() {
+                // if (document.getElementById("title").value == null || document.getElementById("title").value =="") {
+                //     console.log('title');
+                // }
                 this.loading = true;
                 axios.post('/api/todos', this.form, {
                     headers: {
-                        'x-csrf-token': document.querySelectorAll('meta[name=csrf-token]')[0].getAttributeNode('content').value,
                         "Content-type": "application/json"
                     }
                 })
@@ -59,7 +64,25 @@
                         this.$router.push('todolist');
                     }
                     else {
-                        console.log(res.data.errors);
+                        if (res.data.errors) {
+                            var str = '';
+                            if (res.data.errors.title) {
+                                str += res.data.errors.title+'\n';
+                            }
+                            
+                            if (res.data.errors.description) {
+                                str += res.data.errors.description+'\n';
+                            }
+                            
+                            if (res.data.errors.due_at) {
+                                str += res.data.errors.due_at+'\n';
+                            }
+
+                            Toast.fire({
+                                icon: 'error',
+                                title: str
+                            });
+                        }
                     }
                 })
             }

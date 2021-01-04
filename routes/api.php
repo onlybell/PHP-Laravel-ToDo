@@ -22,6 +22,7 @@ Route::namespace('App\\Http\\Controllers\\API')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::get('todolist', 'ToDoController@index');
         Route::post('todos', 'ToDoController@store');
+        Route::delete('todoDelete/{id}', 'ToDoController@delete');
 
         Route::apiResources([
             'todo' => 'ToDoController',
