@@ -18,7 +18,7 @@ class CreateToDosTable extends Migration
             $table->integer('user_id');
             $table->string('title');
             $table->longText('description');
-            $table->timestamp('due_at')->nullable();
+            $table->date('due_at')->nullable();
             $table->string('completed')->default('N')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();

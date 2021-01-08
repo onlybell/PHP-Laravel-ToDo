@@ -13,7 +13,8 @@ use Validator;
 
 class ToDoController extends Controller
 {
-    protected $user_id;
+    protected $user_id = '';
+    protected $todo = '';
     /**
      * Create a new controller instance.
      *
@@ -32,8 +33,7 @@ class ToDoController extends Controller
     public function index()
     {
         $this->user_id = Auth::id();
-
-        $todos = ToDo::latest()->where('user_id', '=', $this->user_id)->paginate(10);
+        $todos = ToDo::latest()->where('user_id', '=', $this->user_id)->orderBy('due_at','DESC')->paginate(5);
         
         return $todos;
     }
@@ -82,7 +82,9 @@ class ToDoController extends Controller
      */
     public function show($id)
     {
+        $todo = ToDo::findOrFail($id);
 
+        return response()->json($todo);
     }
 
     /**
@@ -93,7 +95,28 @@ class ToDoController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
+        $todo = ToDo::findOrFail($id);
 
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "title" => ["required"],
+                "description" => ["required"],
+                "due_at" => ["required"]
+            ]
+        );
+
+        if ($validator->fails()) {
+            return [
+                "status" => false,
+                "errors" => $validator->messages()
+            ];
+        }
+
+        $todo->update($request->all());
+
+        return response()->json(['status' => true]);
     }
     
     /**
@@ -103,7 +126,15 @@ class ToDoController extends Controller
      */
     public function updateCompleted($id)
     {
+        $todo = ToDo::find($id);
 
+        $todo->completed = 'Y';
+        $todo->completed_at = now();
+
+        // Update to DB
+        $todo->update();
+
+        return response()->json(['status' => true]);
     }
     
     /**

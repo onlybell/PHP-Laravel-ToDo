@@ -2013,33 +2013,138 @@ __webpack_require__.r(__webpack_exports__);
   components: {},
   data: function data() {
     return {
-      form: {
+      loading: false,
+      error: false,
+      form: new Form({
         title: "",
         description: "",
         due_at: ""
-      },
-      loading: false,
-      error: false
+      })
     };
   },
-  mounted: function mounted() {
-    console.log('Component mounted.');
-  },
+  mounted: function mounted() {},
   methods: {
     store: function store() {
       var _this = this;
 
-      // if (document.getElementById("title").value == null || document.getElementById("title").value =="") {
-      //     console.log('title');
-      // }
       this.loading = true;
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/todos', this.form, {
-        headers: {
-          "Content-type": "application/json"
-        }
-      }).then(function (res) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/todos', this.form).then(function (res) {
         if (res.data.status) {
           _this.$router.push('todolist');
+        } else {
+          if (res.data.errors) {
+            var str = '';
+
+            if (res.data.errors.title) {
+              str += res.data.errors.title + '\n';
+            }
+
+            if (res.data.errors.description) {
+              str += res.data.errors.description + '\n';
+            }
+
+            if (res.data.errors.due_at) {
+              str += res.data.errors.due_at + '\n';
+            }
+
+            Toast.fire({
+              icon: 'error',
+              title: str
+            });
+          }
+        }
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ToDoEdit.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ToDoEdit.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {},
+  data: function data() {
+    return {
+      todo: {},
+      loading: false,
+      error: false,
+      form: new Form({
+        title: "",
+        description: "",
+        due_at: ""
+      })
+    };
+  },
+  mounted: function mounted() {
+    this.loadTodos();
+  },
+  methods: {
+    loadTodos: function loadTodos() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/todoEdit/' + this.$route.params.id).then(function (res) {
+        _this.todo = res.data;
+        setTimeout(function () {
+          _this.loading = false;
+        }, 500);
+      });
+    },
+    update: function update() {
+      var _this2 = this;
+
+      this.loading = true;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/todoUpdate/' + this.$route.params.id, this.todo).then(function (res) {
+        if (res.data.status) {
+          _this2.loadTodos();
+
+          Toast.fire({
+            icon: 'success',
+            title: 'Task has been updated'
+          });
         } else {
           if (res.data.errors) {
             var str = '';
@@ -2078,6 +2183,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -2116,28 +2223,42 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       loading: true,
-      todos: []
+      todos: {},
+      meta: null
     };
   },
   mounted: function mounted() {
     this.loadTodos();
   },
   methods: {
-    loadTodos: function loadTodos() {
+    getResults: function getResults() {
       var _this = this;
 
-      axios.get('/api/todolist/').then(function (res) {
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/todolist?page=' + page).then(function (res) {
         _this.todos = res.data;
+      });
+    },
+    loadTodos: function loadTodos() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/todolist/').then(function (res) {
+        _this2.todos = res.data;
         setTimeout(function () {
-          _this.loading = false;
+          _this2.loading = false;
         }, 500);
       });
     },
     completeTask: function completeTask(id) {
+      var _this3 = this;
+
       Swal.fire({
         title: 'Complete the Task',
         text: "",
@@ -2146,27 +2267,20 @@ __webpack_require__.r(__webpack_exports__);
         cancelButtonColor: '#3085d6',
         confirmButtonText: 'Yes, Complete it!'
       }).then(function (result) {
-        // Send request to the server
         if (result.value) {
-          console.log('Delete');
-          /*
-            this.form.delete('api/product/'+id).then(()=>{
-                    Swal.fire(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                    );
-                // Fire.$emit('AfterCreate');
-                this.loadProducts();
-          
-            }).catch((data)=> {
-                Swal.fire("Failed!", data.message, "warning");
-            });
-            */
+          axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/todoComplete/' + id).then(function (res) {
+            if (res.data.status) {
+              _this3.loadTodos();
+            } else {
+              Swal.fire("Failed!", res.data.status, "warning");
+            }
+          });
         }
       });
     },
     deleteTask: function deleteTask(id) {
+      var _this4 = this;
+
       Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -2175,30 +2289,16 @@ __webpack_require__.r(__webpack_exports__);
         cancelButtonColor: '#3085d6',
         confirmButtonText: 'Yes, delete it!'
       }).then(function (result) {
-        // Send request to the server
         if (result.value) {
-          axios["delete"]('/api/todoDelete/' + id).then(function (res) {
+          axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]('/api/todoDelete/' + id).then(function (res) {
             if (res.data.status) {
-              location.reload();
+              _this4.loadTodos();
             } else {
-              console.log(res.data.errors);
+              Swal.fire("Failed!", res.data.errors, "warning");
             }
+          })["catch"](function (data) {
+            Swal.fire("Failed!", data.message, "warning");
           });
-          console.log('Delete');
-          /*
-            this.form.delete('api/product/'+id).then(()=>{
-                    Swal.fire(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                    );
-                // Fire.$emit('AfterCreate');
-                this.loadProducts();
-          
-            }).catch((data)=> {
-                Swal.fire("Failed!", data.message, "warning");
-            });
-            */
         }
       });
     }
@@ -6633,1173 +6733,6 @@ __webpack_require__.r(__webpack_exports__);
 })));
 //# sourceMappingURL=bootstrap.js.map
 
-
-/***/ }),
-
-/***/ "./node_modules/es6-promise/dist/es6-promise.js":
-/*!******************************************************!*\
-  !*** ./node_modules/es6-promise/dist/es6-promise.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process, global) {var require;/*!
- * @overview es6-promise - a tiny implementation of Promises/A+.
- * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
- * @license   Licensed under MIT license
- *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
- * @version   4.0.5
- */
-
-(function (global, factory) {
-     true ? module.exports = factory() :
-    undefined;
-}(this, (function () { 'use strict';
-
-function objectOrFunction(x) {
-  return typeof x === 'function' || typeof x === 'object' && x !== null;
-}
-
-function isFunction(x) {
-  return typeof x === 'function';
-}
-
-var _isArray = undefined;
-if (!Array.isArray) {
-  _isArray = function (x) {
-    return Object.prototype.toString.call(x) === '[object Array]';
-  };
-} else {
-  _isArray = Array.isArray;
-}
-
-var isArray = _isArray;
-
-var len = 0;
-var vertxNext = undefined;
-var customSchedulerFn = undefined;
-
-var asap = function asap(callback, arg) {
-  queue[len] = callback;
-  queue[len + 1] = arg;
-  len += 2;
-  if (len === 2) {
-    // If len is 2, that means that we need to schedule an async flush.
-    // If additional callbacks are queued before the queue is flushed, they
-    // will be processed by this flush that we are scheduling.
-    if (customSchedulerFn) {
-      customSchedulerFn(flush);
-    } else {
-      scheduleFlush();
-    }
-  }
-};
-
-function setScheduler(scheduleFn) {
-  customSchedulerFn = scheduleFn;
-}
-
-function setAsap(asapFn) {
-  asap = asapFn;
-}
-
-var browserWindow = typeof window !== 'undefined' ? window : undefined;
-var browserGlobal = browserWindow || {};
-var BrowserMutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
-var isNode = typeof self === 'undefined' && typeof process !== 'undefined' && ({}).toString.call(process) === '[object process]';
-
-// test for web worker but not in IE10
-var isWorker = typeof Uint8ClampedArray !== 'undefined' && typeof importScripts !== 'undefined' && typeof MessageChannel !== 'undefined';
-
-// node
-function useNextTick() {
-  // node version 0.10.x displays a deprecation warning when nextTick is used recursively
-  // see https://github.com/cujojs/when/issues/410 for details
-  return function () {
-    return process.nextTick(flush);
-  };
-}
-
-// vertx
-function useVertxTimer() {
-  if (typeof vertxNext !== 'undefined') {
-    return function () {
-      vertxNext(flush);
-    };
-  }
-
-  return useSetTimeout();
-}
-
-function useMutationObserver() {
-  var iterations = 0;
-  var observer = new BrowserMutationObserver(flush);
-  var node = document.createTextNode('');
-  observer.observe(node, { characterData: true });
-
-  return function () {
-    node.data = iterations = ++iterations % 2;
-  };
-}
-
-// web worker
-function useMessageChannel() {
-  var channel = new MessageChannel();
-  channel.port1.onmessage = flush;
-  return function () {
-    return channel.port2.postMessage(0);
-  };
-}
-
-function useSetTimeout() {
-  // Store setTimeout reference so es6-promise will be unaffected by
-  // other code modifying setTimeout (like sinon.useFakeTimers())
-  var globalSetTimeout = setTimeout;
-  return function () {
-    return globalSetTimeout(flush, 1);
-  };
-}
-
-var queue = new Array(1000);
-function flush() {
-  for (var i = 0; i < len; i += 2) {
-    var callback = queue[i];
-    var arg = queue[i + 1];
-
-    callback(arg);
-
-    queue[i] = undefined;
-    queue[i + 1] = undefined;
-  }
-
-  len = 0;
-}
-
-function attemptVertx() {
-  try {
-    var r = require;
-    var vertx = __webpack_require__(/*! vertx */ 1);
-    vertxNext = vertx.runOnLoop || vertx.runOnContext;
-    return useVertxTimer();
-  } catch (e) {
-    return useSetTimeout();
-  }
-}
-
-var scheduleFlush = undefined;
-// Decide what async method to use to triggering processing of queued callbacks:
-if (isNode) {
-  scheduleFlush = useNextTick();
-} else if (BrowserMutationObserver) {
-  scheduleFlush = useMutationObserver();
-} else if (isWorker) {
-  scheduleFlush = useMessageChannel();
-} else if (browserWindow === undefined && "function" === 'function') {
-  scheduleFlush = attemptVertx();
-} else {
-  scheduleFlush = useSetTimeout();
-}
-
-function then(onFulfillment, onRejection) {
-  var _arguments = arguments;
-
-  var parent = this;
-
-  var child = new this.constructor(noop);
-
-  if (child[PROMISE_ID] === undefined) {
-    makePromise(child);
-  }
-
-  var _state = parent._state;
-
-  if (_state) {
-    (function () {
-      var callback = _arguments[_state - 1];
-      asap(function () {
-        return invokeCallback(_state, child, callback, parent._result);
-      });
-    })();
-  } else {
-    subscribe(parent, child, onFulfillment, onRejection);
-  }
-
-  return child;
-}
-
-/**
-  `Promise.resolve` returns a promise that will become resolved with the
-  passed `value`. It is shorthand for the following:
-
-  ```javascript
-  let promise = new Promise(function(resolve, reject){
-    resolve(1);
-  });
-
-  promise.then(function(value){
-    // value === 1
-  });
-  ```
-
-  Instead of writing the above, your code now simply becomes the following:
-
-  ```javascript
-  let promise = Promise.resolve(1);
-
-  promise.then(function(value){
-    // value === 1
-  });
-  ```
-
-  @method resolve
-  @static
-  @param {Any} value value that the returned promise will be resolved with
-  Useful for tooling.
-  @return {Promise} a promise that will become fulfilled with the given
-  `value`
-*/
-function resolve(object) {
-  /*jshint validthis:true */
-  var Constructor = this;
-
-  if (object && typeof object === 'object' && object.constructor === Constructor) {
-    return object;
-  }
-
-  var promise = new Constructor(noop);
-  _resolve(promise, object);
-  return promise;
-}
-
-var PROMISE_ID = Math.random().toString(36).substring(16);
-
-function noop() {}
-
-var PENDING = void 0;
-var FULFILLED = 1;
-var REJECTED = 2;
-
-var GET_THEN_ERROR = new ErrorObject();
-
-function selfFulfillment() {
-  return new TypeError("You cannot resolve a promise with itself");
-}
-
-function cannotReturnOwn() {
-  return new TypeError('A promises callback cannot return that same promise.');
-}
-
-function getThen(promise) {
-  try {
-    return promise.then;
-  } catch (error) {
-    GET_THEN_ERROR.error = error;
-    return GET_THEN_ERROR;
-  }
-}
-
-function tryThen(then, value, fulfillmentHandler, rejectionHandler) {
-  try {
-    then.call(value, fulfillmentHandler, rejectionHandler);
-  } catch (e) {
-    return e;
-  }
-}
-
-function handleForeignThenable(promise, thenable, then) {
-  asap(function (promise) {
-    var sealed = false;
-    var error = tryThen(then, thenable, function (value) {
-      if (sealed) {
-        return;
-      }
-      sealed = true;
-      if (thenable !== value) {
-        _resolve(promise, value);
-      } else {
-        fulfill(promise, value);
-      }
-    }, function (reason) {
-      if (sealed) {
-        return;
-      }
-      sealed = true;
-
-      _reject(promise, reason);
-    }, 'Settle: ' + (promise._label || ' unknown promise'));
-
-    if (!sealed && error) {
-      sealed = true;
-      _reject(promise, error);
-    }
-  }, promise);
-}
-
-function handleOwnThenable(promise, thenable) {
-  if (thenable._state === FULFILLED) {
-    fulfill(promise, thenable._result);
-  } else if (thenable._state === REJECTED) {
-    _reject(promise, thenable._result);
-  } else {
-    subscribe(thenable, undefined, function (value) {
-      return _resolve(promise, value);
-    }, function (reason) {
-      return _reject(promise, reason);
-    });
-  }
-}
-
-function handleMaybeThenable(promise, maybeThenable, then$$) {
-  if (maybeThenable.constructor === promise.constructor && then$$ === then && maybeThenable.constructor.resolve === resolve) {
-    handleOwnThenable(promise, maybeThenable);
-  } else {
-    if (then$$ === GET_THEN_ERROR) {
-      _reject(promise, GET_THEN_ERROR.error);
-    } else if (then$$ === undefined) {
-      fulfill(promise, maybeThenable);
-    } else if (isFunction(then$$)) {
-      handleForeignThenable(promise, maybeThenable, then$$);
-    } else {
-      fulfill(promise, maybeThenable);
-    }
-  }
-}
-
-function _resolve(promise, value) {
-  if (promise === value) {
-    _reject(promise, selfFulfillment());
-  } else if (objectOrFunction(value)) {
-    handleMaybeThenable(promise, value, getThen(value));
-  } else {
-    fulfill(promise, value);
-  }
-}
-
-function publishRejection(promise) {
-  if (promise._onerror) {
-    promise._onerror(promise._result);
-  }
-
-  publish(promise);
-}
-
-function fulfill(promise, value) {
-  if (promise._state !== PENDING) {
-    return;
-  }
-
-  promise._result = value;
-  promise._state = FULFILLED;
-
-  if (promise._subscribers.length !== 0) {
-    asap(publish, promise);
-  }
-}
-
-function _reject(promise, reason) {
-  if (promise._state !== PENDING) {
-    return;
-  }
-  promise._state = REJECTED;
-  promise._result = reason;
-
-  asap(publishRejection, promise);
-}
-
-function subscribe(parent, child, onFulfillment, onRejection) {
-  var _subscribers = parent._subscribers;
-  var length = _subscribers.length;
-
-  parent._onerror = null;
-
-  _subscribers[length] = child;
-  _subscribers[length + FULFILLED] = onFulfillment;
-  _subscribers[length + REJECTED] = onRejection;
-
-  if (length === 0 && parent._state) {
-    asap(publish, parent);
-  }
-}
-
-function publish(promise) {
-  var subscribers = promise._subscribers;
-  var settled = promise._state;
-
-  if (subscribers.length === 0) {
-    return;
-  }
-
-  var child = undefined,
-      callback = undefined,
-      detail = promise._result;
-
-  for (var i = 0; i < subscribers.length; i += 3) {
-    child = subscribers[i];
-    callback = subscribers[i + settled];
-
-    if (child) {
-      invokeCallback(settled, child, callback, detail);
-    } else {
-      callback(detail);
-    }
-  }
-
-  promise._subscribers.length = 0;
-}
-
-function ErrorObject() {
-  this.error = null;
-}
-
-var TRY_CATCH_ERROR = new ErrorObject();
-
-function tryCatch(callback, detail) {
-  try {
-    return callback(detail);
-  } catch (e) {
-    TRY_CATCH_ERROR.error = e;
-    return TRY_CATCH_ERROR;
-  }
-}
-
-function invokeCallback(settled, promise, callback, detail) {
-  var hasCallback = isFunction(callback),
-      value = undefined,
-      error = undefined,
-      succeeded = undefined,
-      failed = undefined;
-
-  if (hasCallback) {
-    value = tryCatch(callback, detail);
-
-    if (value === TRY_CATCH_ERROR) {
-      failed = true;
-      error = value.error;
-      value = null;
-    } else {
-      succeeded = true;
-    }
-
-    if (promise === value) {
-      _reject(promise, cannotReturnOwn());
-      return;
-    }
-  } else {
-    value = detail;
-    succeeded = true;
-  }
-
-  if (promise._state !== PENDING) {
-    // noop
-  } else if (hasCallback && succeeded) {
-      _resolve(promise, value);
-    } else if (failed) {
-      _reject(promise, error);
-    } else if (settled === FULFILLED) {
-      fulfill(promise, value);
-    } else if (settled === REJECTED) {
-      _reject(promise, value);
-    }
-}
-
-function initializePromise(promise, resolver) {
-  try {
-    resolver(function resolvePromise(value) {
-      _resolve(promise, value);
-    }, function rejectPromise(reason) {
-      _reject(promise, reason);
-    });
-  } catch (e) {
-    _reject(promise, e);
-  }
-}
-
-var id = 0;
-function nextId() {
-  return id++;
-}
-
-function makePromise(promise) {
-  promise[PROMISE_ID] = id++;
-  promise._state = undefined;
-  promise._result = undefined;
-  promise._subscribers = [];
-}
-
-function Enumerator(Constructor, input) {
-  this._instanceConstructor = Constructor;
-  this.promise = new Constructor(noop);
-
-  if (!this.promise[PROMISE_ID]) {
-    makePromise(this.promise);
-  }
-
-  if (isArray(input)) {
-    this._input = input;
-    this.length = input.length;
-    this._remaining = input.length;
-
-    this._result = new Array(this.length);
-
-    if (this.length === 0) {
-      fulfill(this.promise, this._result);
-    } else {
-      this.length = this.length || 0;
-      this._enumerate();
-      if (this._remaining === 0) {
-        fulfill(this.promise, this._result);
-      }
-    }
-  } else {
-    _reject(this.promise, validationError());
-  }
-}
-
-function validationError() {
-  return new Error('Array Methods must be provided an Array');
-};
-
-Enumerator.prototype._enumerate = function () {
-  var length = this.length;
-  var _input = this._input;
-
-  for (var i = 0; this._state === PENDING && i < length; i++) {
-    this._eachEntry(_input[i], i);
-  }
-};
-
-Enumerator.prototype._eachEntry = function (entry, i) {
-  var c = this._instanceConstructor;
-  var resolve$$ = c.resolve;
-
-  if (resolve$$ === resolve) {
-    var _then = getThen(entry);
-
-    if (_then === then && entry._state !== PENDING) {
-      this._settledAt(entry._state, i, entry._result);
-    } else if (typeof _then !== 'function') {
-      this._remaining--;
-      this._result[i] = entry;
-    } else if (c === Promise) {
-      var promise = new c(noop);
-      handleMaybeThenable(promise, entry, _then);
-      this._willSettleAt(promise, i);
-    } else {
-      this._willSettleAt(new c(function (resolve$$) {
-        return resolve$$(entry);
-      }), i);
-    }
-  } else {
-    this._willSettleAt(resolve$$(entry), i);
-  }
-};
-
-Enumerator.prototype._settledAt = function (state, i, value) {
-  var promise = this.promise;
-
-  if (promise._state === PENDING) {
-    this._remaining--;
-
-    if (state === REJECTED) {
-      _reject(promise, value);
-    } else {
-      this._result[i] = value;
-    }
-  }
-
-  if (this._remaining === 0) {
-    fulfill(promise, this._result);
-  }
-};
-
-Enumerator.prototype._willSettleAt = function (promise, i) {
-  var enumerator = this;
-
-  subscribe(promise, undefined, function (value) {
-    return enumerator._settledAt(FULFILLED, i, value);
-  }, function (reason) {
-    return enumerator._settledAt(REJECTED, i, reason);
-  });
-};
-
-/**
-  `Promise.all` accepts an array of promises, and returns a new promise which
-  is fulfilled with an array of fulfillment values for the passed promises, or
-  rejected with the reason of the first passed promise to be rejected. It casts all
-  elements of the passed iterable to promises as it runs this algorithm.
-
-  Example:
-
-  ```javascript
-  let promise1 = resolve(1);
-  let promise2 = resolve(2);
-  let promise3 = resolve(3);
-  let promises = [ promise1, promise2, promise3 ];
-
-  Promise.all(promises).then(function(array){
-    // The array here would be [ 1, 2, 3 ];
-  });
-  ```
-
-  If any of the `promises` given to `all` are rejected, the first promise
-  that is rejected will be given as an argument to the returned promises's
-  rejection handler. For example:
-
-  Example:
-
-  ```javascript
-  let promise1 = resolve(1);
-  let promise2 = reject(new Error("2"));
-  let promise3 = reject(new Error("3"));
-  let promises = [ promise1, promise2, promise3 ];
-
-  Promise.all(promises).then(function(array){
-    // Code here never runs because there are rejected promises!
-  }, function(error) {
-    // error.message === "2"
-  });
-  ```
-
-  @method all
-  @static
-  @param {Array} entries array of promises
-  @param {String} label optional string for labeling the promise.
-  Useful for tooling.
-  @return {Promise} promise that is fulfilled when all `promises` have been
-  fulfilled, or rejected if any of them become rejected.
-  @static
-*/
-function all(entries) {
-  return new Enumerator(this, entries).promise;
-}
-
-/**
-  `Promise.race` returns a new promise which is settled in the same way as the
-  first passed promise to settle.
-
-  Example:
-
-  ```javascript
-  let promise1 = new Promise(function(resolve, reject){
-    setTimeout(function(){
-      resolve('promise 1');
-    }, 200);
-  });
-
-  let promise2 = new Promise(function(resolve, reject){
-    setTimeout(function(){
-      resolve('promise 2');
-    }, 100);
-  });
-
-  Promise.race([promise1, promise2]).then(function(result){
-    // result === 'promise 2' because it was resolved before promise1
-    // was resolved.
-  });
-  ```
-
-  `Promise.race` is deterministic in that only the state of the first
-  settled promise matters. For example, even if other promises given to the
-  `promises` array argument are resolved, but the first settled promise has
-  become rejected before the other promises became fulfilled, the returned
-  promise will become rejected:
-
-  ```javascript
-  let promise1 = new Promise(function(resolve, reject){
-    setTimeout(function(){
-      resolve('promise 1');
-    }, 200);
-  });
-
-  let promise2 = new Promise(function(resolve, reject){
-    setTimeout(function(){
-      reject(new Error('promise 2'));
-    }, 100);
-  });
-
-  Promise.race([promise1, promise2]).then(function(result){
-    // Code here never runs
-  }, function(reason){
-    // reason.message === 'promise 2' because promise 2 became rejected before
-    // promise 1 became fulfilled
-  });
-  ```
-
-  An example real-world use case is implementing timeouts:
-
-  ```javascript
-  Promise.race([ajax('foo.json'), timeout(5000)])
-  ```
-
-  @method race
-  @static
-  @param {Array} promises array of promises to observe
-  Useful for tooling.
-  @return {Promise} a promise which settles in the same way as the first passed
-  promise to settle.
-*/
-function race(entries) {
-  /*jshint validthis:true */
-  var Constructor = this;
-
-  if (!isArray(entries)) {
-    return new Constructor(function (_, reject) {
-      return reject(new TypeError('You must pass an array to race.'));
-    });
-  } else {
-    return new Constructor(function (resolve, reject) {
-      var length = entries.length;
-      for (var i = 0; i < length; i++) {
-        Constructor.resolve(entries[i]).then(resolve, reject);
-      }
-    });
-  }
-}
-
-/**
-  `Promise.reject` returns a promise rejected with the passed `reason`.
-  It is shorthand for the following:
-
-  ```javascript
-  let promise = new Promise(function(resolve, reject){
-    reject(new Error('WHOOPS'));
-  });
-
-  promise.then(function(value){
-    // Code here doesn't run because the promise is rejected!
-  }, function(reason){
-    // reason.message === 'WHOOPS'
-  });
-  ```
-
-  Instead of writing the above, your code now simply becomes the following:
-
-  ```javascript
-  let promise = Promise.reject(new Error('WHOOPS'));
-
-  promise.then(function(value){
-    // Code here doesn't run because the promise is rejected!
-  }, function(reason){
-    // reason.message === 'WHOOPS'
-  });
-  ```
-
-  @method reject
-  @static
-  @param {Any} reason value that the returned promise will be rejected with.
-  Useful for tooling.
-  @return {Promise} a promise rejected with the given `reason`.
-*/
-function reject(reason) {
-  /*jshint validthis:true */
-  var Constructor = this;
-  var promise = new Constructor(noop);
-  _reject(promise, reason);
-  return promise;
-}
-
-function needsResolver() {
-  throw new TypeError('You must pass a resolver function as the first argument to the promise constructor');
-}
-
-function needsNew() {
-  throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
-}
-
-/**
-  Promise objects represent the eventual result of an asynchronous operation. The
-  primary way of interacting with a promise is through its `then` method, which
-  registers callbacks to receive either a promise's eventual value or the reason
-  why the promise cannot be fulfilled.
-
-  Terminology
-  -----------
-
-  - `promise` is an object or function with a `then` method whose behavior conforms to this specification.
-  - `thenable` is an object or function that defines a `then` method.
-  - `value` is any legal JavaScript value (including undefined, a thenable, or a promise).
-  - `exception` is a value that is thrown using the throw statement.
-  - `reason` is a value that indicates why a promise was rejected.
-  - `settled` the final resting state of a promise, fulfilled or rejected.
-
-  A promise can be in one of three states: pending, fulfilled, or rejected.
-
-  Promises that are fulfilled have a fulfillment value and are in the fulfilled
-  state.  Promises that are rejected have a rejection reason and are in the
-  rejected state.  A fulfillment value is never a thenable.
-
-  Promises can also be said to *resolve* a value.  If this value is also a
-  promise, then the original promise's settled state will match the value's
-  settled state.  So a promise that *resolves* a promise that rejects will
-  itself reject, and a promise that *resolves* a promise that fulfills will
-  itself fulfill.
-
-
-  Basic Usage:
-  ------------
-
-  ```js
-  let promise = new Promise(function(resolve, reject) {
-    // on success
-    resolve(value);
-
-    // on failure
-    reject(reason);
-  });
-
-  promise.then(function(value) {
-    // on fulfillment
-  }, function(reason) {
-    // on rejection
-  });
-  ```
-
-  Advanced Usage:
-  ---------------
-
-  Promises shine when abstracting away asynchronous interactions such as
-  `XMLHttpRequest`s.
-
-  ```js
-  function getJSON(url) {
-    return new Promise(function(resolve, reject){
-      let xhr = new XMLHttpRequest();
-
-      xhr.open('GET', url);
-      xhr.onreadystatechange = handler;
-      xhr.responseType = 'json';
-      xhr.setRequestHeader('Accept', 'application/json');
-      xhr.send();
-
-      function handler() {
-        if (this.readyState === this.DONE) {
-          if (this.status === 200) {
-            resolve(this.response);
-          } else {
-            reject(new Error('getJSON: `' + url + '` failed with status: [' + this.status + ']'));
-          }
-        }
-      };
-    });
-  }
-
-  getJSON('/posts.json').then(function(json) {
-    // on fulfillment
-  }, function(reason) {
-    // on rejection
-  });
-  ```
-
-  Unlike callbacks, promises are great composable primitives.
-
-  ```js
-  Promise.all([
-    getJSON('/posts'),
-    getJSON('/comments')
-  ]).then(function(values){
-    values[0] // => postsJSON
-    values[1] // => commentsJSON
-
-    return values;
-  });
-  ```
-
-  @class Promise
-  @param {function} resolver
-  Useful for tooling.
-  @constructor
-*/
-function Promise(resolver) {
-  this[PROMISE_ID] = nextId();
-  this._result = this._state = undefined;
-  this._subscribers = [];
-
-  if (noop !== resolver) {
-    typeof resolver !== 'function' && needsResolver();
-    this instanceof Promise ? initializePromise(this, resolver) : needsNew();
-  }
-}
-
-Promise.all = all;
-Promise.race = race;
-Promise.resolve = resolve;
-Promise.reject = reject;
-Promise._setScheduler = setScheduler;
-Promise._setAsap = setAsap;
-Promise._asap = asap;
-
-Promise.prototype = {
-  constructor: Promise,
-
-  /**
-    The primary way of interacting with a promise is through its `then` method,
-    which registers callbacks to receive either a promise's eventual value or the
-    reason why the promise cannot be fulfilled.
-  
-    ```js
-    findUser().then(function(user){
-      // user is available
-    }, function(reason){
-      // user is unavailable, and you are given the reason why
-    });
-    ```
-  
-    Chaining
-    --------
-  
-    The return value of `then` is itself a promise.  This second, 'downstream'
-    promise is resolved with the return value of the first promise's fulfillment
-    or rejection handler, or rejected if the handler throws an exception.
-  
-    ```js
-    findUser().then(function (user) {
-      return user.name;
-    }, function (reason) {
-      return 'default name';
-    }).then(function (userName) {
-      // If `findUser` fulfilled, `userName` will be the user's name, otherwise it
-      // will be `'default name'`
-    });
-  
-    findUser().then(function (user) {
-      throw new Error('Found user, but still unhappy');
-    }, function (reason) {
-      throw new Error('`findUser` rejected and we're unhappy');
-    }).then(function (value) {
-      // never reached
-    }, function (reason) {
-      // if `findUser` fulfilled, `reason` will be 'Found user, but still unhappy'.
-      // If `findUser` rejected, `reason` will be '`findUser` rejected and we're unhappy'.
-    });
-    ```
-    If the downstream promise does not specify a rejection handler, rejection reasons will be propagated further downstream.
-  
-    ```js
-    findUser().then(function (user) {
-      throw new PedagogicalException('Upstream error');
-    }).then(function (value) {
-      // never reached
-    }).then(function (value) {
-      // never reached
-    }, function (reason) {
-      // The `PedgagocialException` is propagated all the way down to here
-    });
-    ```
-  
-    Assimilation
-    ------------
-  
-    Sometimes the value you want to propagate to a downstream promise can only be
-    retrieved asynchronously. This can be achieved by returning a promise in the
-    fulfillment or rejection handler. The downstream promise will then be pending
-    until the returned promise is settled. This is called *assimilation*.
-  
-    ```js
-    findUser().then(function (user) {
-      return findCommentsByAuthor(user);
-    }).then(function (comments) {
-      // The user's comments are now available
-    });
-    ```
-  
-    If the assimliated promise rejects, then the downstream promise will also reject.
-  
-    ```js
-    findUser().then(function (user) {
-      return findCommentsByAuthor(user);
-    }).then(function (comments) {
-      // If `findCommentsByAuthor` fulfills, we'll have the value here
-    }, function (reason) {
-      // If `findCommentsByAuthor` rejects, we'll have the reason here
-    });
-    ```
-  
-    Simple Example
-    --------------
-  
-    Synchronous Example
-  
-    ```javascript
-    let result;
-  
-    try {
-      result = findResult();
-      // success
-    } catch(reason) {
-      // failure
-    }
-    ```
-  
-    Errback Example
-  
-    ```js
-    findResult(function(result, err){
-      if (err) {
-        // failure
-      } else {
-        // success
-      }
-    });
-    ```
-  
-    Promise Example;
-  
-    ```javascript
-    findResult().then(function(result){
-      // success
-    }, function(reason){
-      // failure
-    });
-    ```
-  
-    Advanced Example
-    --------------
-  
-    Synchronous Example
-  
-    ```javascript
-    let author, books;
-  
-    try {
-      author = findAuthor();
-      books  = findBooksByAuthor(author);
-      // success
-    } catch(reason) {
-      // failure
-    }
-    ```
-  
-    Errback Example
-  
-    ```js
-  
-    function foundBooks(books) {
-  
-    }
-  
-    function failure(reason) {
-  
-    }
-  
-    findAuthor(function(author, err){
-      if (err) {
-        failure(err);
-        // failure
-      } else {
-        try {
-          findBoooksByAuthor(author, function(books, err) {
-            if (err) {
-              failure(err);
-            } else {
-              try {
-                foundBooks(books);
-              } catch(reason) {
-                failure(reason);
-              }
-            }
-          });
-        } catch(error) {
-          failure(err);
-        }
-        // success
-      }
-    });
-    ```
-  
-    Promise Example;
-  
-    ```javascript
-    findAuthor().
-      then(findBooksByAuthor).
-      then(function(books){
-        // found books
-    }).catch(function(reason){
-      // something went wrong
-    });
-    ```
-  
-    @method then
-    @param {Function} onFulfilled
-    @param {Function} onRejected
-    Useful for tooling.
-    @return {Promise}
-  */
-  then: then,
-
-  /**
-    `catch` is simply sugar for `then(undefined, onRejection)` which makes it the same
-    as the catch block of a try/catch statement.
-  
-    ```js
-    function findAuthor(){
-      throw new Error('couldn't find that author');
-    }
-  
-    // synchronous
-    try {
-      findAuthor();
-    } catch(reason) {
-      // something went wrong
-    }
-  
-    // async with promises
-    findAuthor().catch(function(reason){
-      // something went wrong
-    });
-    ```
-  
-    @method catch
-    @param {Function} onRejection
-    Useful for tooling.
-    @return {Promise}
-  */
-  'catch': function _catch(onRejection) {
-    return this.then(null, onRejection);
-  }
-};
-
-function polyfill() {
-    var local = undefined;
-
-    if (typeof global !== 'undefined') {
-        local = global;
-    } else if (typeof self !== 'undefined') {
-        local = self;
-    } else {
-        try {
-            local = Function('return this')();
-        } catch (e) {
-            throw new Error('polyfill failed because global object is unavailable in this environment');
-        }
-    }
-
-    var P = local.Promise;
-
-    if (P) {
-        var promiseToString = null;
-        try {
-            promiseToString = Object.prototype.toString.call(P.resolve());
-        } catch (e) {
-            // silently ignored
-        }
-
-        if (promiseToString === '[object Promise]' && !P.cast) {
-            return;
-        }
-    }
-
-    local.Promise = Promise;
-}
-
-// Strange compat..
-Promise.polyfill = polyfill;
-Promise.Promise = Promise;
-
-return Promise;
-
-})));
-//# sourceMappingURL=es6-promise.map
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../process/browser.js */ "./node_modules/process/browser.js"), __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
 
 /***/ }),
 
@@ -18684,6 +17617,599 @@ if ( typeof noGlobal === "undefined" ) {
 return jQuery;
 } );
 
+
+/***/ }),
+
+/***/ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports =
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "fb15");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "f6fd":
+/***/ (function(module, exports) {
+
+// document.currentScript polyfill by Adam Miller
+
+// MIT license
+
+(function(document){
+  var currentScript = "currentScript",
+      scripts = document.getElementsByTagName('script'); // Live NodeList collection
+
+  // If browser needs currentScript polyfill, add get currentScript() to the document object
+  if (!(currentScript in document)) {
+    Object.defineProperty(document, currentScript, {
+      get: function(){
+
+        // IE 6-10 supports script readyState
+        // IE 10+ support stack trace
+        try { throw new Error(); }
+        catch (err) {
+
+          // Find the second match for the "at" string to get file src url from stack.
+          // Specifically works with the format of stack traces in IE.
+          var i, res = ((/.*at [^\(]*\((.*):.+:.+\)$/ig).exec(err.stack) || [false])[1];
+
+          // For all scripts on the page, if src matches or if ready state is interactive, return the script tag
+          for(i in scripts){
+            if(scripts[i].src == res || scripts[i].readyState == "interactive"){
+              return scripts[i];
+            }
+          }
+
+          // If no match, return null
+          return null;
+        }
+      }
+    });
+  }
+})(document);
+
+
+/***/ }),
+
+/***/ "fb15":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+
+// CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/setPublicPath.js
+// This file is imported into lib/wc client bundles.
+
+if (typeof window !== 'undefined') {
+  if (true) {
+    __webpack_require__("f6fd")
+  }
+
+  var i
+  if ((i = window.document.currentScript) && (i = i.src.match(/(.+\/)[^/]+\.js(\?.*)?$/))) {
+    __webpack_require__.p = i[1] // eslint-disable-line
+  }
+}
+
+// Indicate to webpack that this file can be concatenated
+/* harmony default export */ var setPublicPath = (null);
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"604a59b1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/LaravelVuePagination.vue?vue&type=template&id=7f71b5a7&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('renderless-laravel-vue-pagination',{attrs:{"data":_vm.data,"limit":_vm.limit,"show-disabled":_vm.showDisabled,"size":_vm.size,"align":_vm.align},on:{"pagination-change-page":_vm.onPaginationChangePage},scopedSlots:_vm._u([{key:"default",fn:function(ref){
+var data = ref.data;
+var limit = ref.limit;
+var showDisabled = ref.showDisabled;
+var size = ref.size;
+var align = ref.align;
+var computed = ref.computed;
+var prevButtonEvents = ref.prevButtonEvents;
+var nextButtonEvents = ref.nextButtonEvents;
+var pageButtonEvents = ref.pageButtonEvents;
+return (computed.total > computed.perPage)?_c('ul',{staticClass:"pagination",class:{
+            'pagination-sm': size == 'small',
+            'pagination-lg': size == 'large',
+            'justify-content-center': align == 'center',
+            'justify-content-end': align == 'right'
+        }},[(computed.prevPageUrl || showDisabled)?_c('li',{staticClass:"page-item pagination-prev-nav",class:{'disabled': !computed.prevPageUrl}},[_c('a',_vm._g({staticClass:"page-link",attrs:{"href":"#","aria-label":"Previous","tabindex":!computed.prevPageUrl && -1}},prevButtonEvents),[_vm._t("prev-nav",[_c('span',{attrs:{"aria-hidden":"true"}},[_vm._v("«")]),_c('span',{staticClass:"sr-only"},[_vm._v("Previous")])])],2)]):_vm._e(),_vm._l((computed.pageRange),function(page,key){return _c('li',{key:key,staticClass:"page-item pagination-page-nav",class:{ 'active': page == computed.currentPage }},[_c('a',_vm._g({staticClass:"page-link",attrs:{"href":"#"}},pageButtonEvents(page)),[_vm._v("\n                "+_vm._s(page)+"\n                "),(page == computed.currentPage)?_c('span',{staticClass:"sr-only"},[_vm._v("(current)")]):_vm._e()])])}),(computed.nextPageUrl || showDisabled)?_c('li',{staticClass:"page-item pagination-next-nav",class:{'disabled': !computed.nextPageUrl}},[_c('a',_vm._g({staticClass:"page-link",attrs:{"href":"#","aria-label":"Next","tabindex":!computed.nextPageUrl && -1}},nextButtonEvents),[_vm._t("next-nav",[_c('span',{attrs:{"aria-hidden":"true"}},[_vm._v("»")]),_c('span',{staticClass:"sr-only"},[_vm._v("Next")])])],2)]):_vm._e()],2):_vm._e()}}],null,true)})}
+var staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./src/LaravelVuePagination.vue?vue&type=template&id=7f71b5a7&
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/RenderlessLaravelVuePagination.vue?vue&type=script&lang=js&
+/* harmony default export */ var RenderlessLaravelVuePaginationvue_type_script_lang_js_ = ({
+  props: {
+    data: {
+      type: Object,
+      default: function _default() {}
+    },
+    limit: {
+      type: Number,
+      default: 0
+    },
+    showDisabled: {
+      type: Boolean,
+      default: false
+    },
+    size: {
+      type: String,
+      default: 'default',
+      validator: function validator(value) {
+        return ['small', 'default', 'large'].indexOf(value) !== -1;
+      }
+    },
+    align: {
+      type: String,
+      default: 'left',
+      validator: function validator(value) {
+        return ['left', 'center', 'right'].indexOf(value) !== -1;
+      }
+    }
+  },
+  computed: {
+    isApiResource: function isApiResource() {
+      return !!this.data.meta;
+    },
+    currentPage: function currentPage() {
+      return this.isApiResource ? this.data.meta.current_page : this.data.current_page;
+    },
+    firstPageUrl: function firstPageUrl() {
+      return this.isApiResource ? this.data.links.first : null;
+    },
+    from: function from() {
+      return this.isApiResource ? this.data.meta.from : this.data.from;
+    },
+    lastPage: function lastPage() {
+      return this.isApiResource ? this.data.meta.last_page : this.data.last_page;
+    },
+    lastPageUrl: function lastPageUrl() {
+      return this.isApiResource ? this.data.links.last : null;
+    },
+    nextPageUrl: function nextPageUrl() {
+      return this.isApiResource ? this.data.links.next : this.data.next_page_url;
+    },
+    perPage: function perPage() {
+      return this.isApiResource ? this.data.meta.per_page : this.data.per_page;
+    },
+    prevPageUrl: function prevPageUrl() {
+      return this.isApiResource ? this.data.links.prev : this.data.prev_page_url;
+    },
+    to: function to() {
+      return this.isApiResource ? this.data.meta.to : this.data.to;
+    },
+    total: function total() {
+      return this.isApiResource ? this.data.meta.total : this.data.total;
+    },
+    pageRange: function pageRange() {
+      if (this.limit === -1) {
+        return 0;
+      }
+
+      if (this.limit === 0) {
+        return this.lastPage;
+      }
+
+      var current = this.currentPage;
+      var last = this.lastPage;
+      var delta = this.limit;
+      var left = current - delta;
+      var right = current + delta + 1;
+      var range = [];
+      var pages = [];
+      var l;
+
+      for (var i = 1; i <= last; i++) {
+        if (i === 1 || i === last || i >= left && i < right) {
+          range.push(i);
+        }
+      }
+
+      range.forEach(function (i) {
+        if (l) {
+          if (i - l === 2) {
+            pages.push(l + 1);
+          } else if (i - l !== 1) {
+            pages.push('...');
+          }
+        }
+
+        pages.push(i);
+        l = i;
+      });
+      return pages;
+    }
+  },
+  methods: {
+    previousPage: function previousPage() {
+      this.selectPage(this.currentPage - 1);
+    },
+    nextPage: function nextPage() {
+      this.selectPage(this.currentPage + 1);
+    },
+    selectPage: function selectPage(page) {
+      if (page === '...') {
+        return;
+      }
+
+      this.$emit('pagination-change-page', page);
+    }
+  },
+  render: function render() {
+    var _this = this;
+
+    return this.$scopedSlots.default({
+      data: this.data,
+      limit: this.limit,
+      showDisabled: this.showDisabled,
+      size: this.size,
+      align: this.align,
+      computed: {
+        isApiResource: this.isApiResource,
+        currentPage: this.currentPage,
+        firstPageUrl: this.firstPageUrl,
+        from: this.from,
+        lastPage: this.lastPage,
+        lastPageUrl: this.lastPageUrl,
+        nextPageUrl: this.nextPageUrl,
+        perPage: this.perPage,
+        prevPageUrl: this.prevPageUrl,
+        to: this.to,
+        total: this.total,
+        pageRange: this.pageRange
+      },
+      prevButtonEvents: {
+        click: function click(e) {
+          e.preventDefault();
+
+          _this.previousPage();
+        }
+      },
+      nextButtonEvents: {
+        click: function click(e) {
+          e.preventDefault();
+
+          _this.nextPage();
+        }
+      },
+      pageButtonEvents: function pageButtonEvents(page) {
+        return {
+          click: function click(e) {
+            e.preventDefault();
+
+            _this.selectPage(page);
+          }
+        };
+      }
+    });
+  }
+});
+// CONCATENATED MODULE: ./src/RenderlessLaravelVuePagination.vue?vue&type=script&lang=js&
+ /* harmony default export */ var src_RenderlessLaravelVuePaginationvue_type_script_lang_js_ = (RenderlessLaravelVuePaginationvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+function normalizeComponent (
+  scriptExports,
+  render,
+  staticRenderFns,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier, /* server only */
+  shadowMode /* vue-cli only */
+) {
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (render) {
+    options.render = render
+    options.staticRenderFns = staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = 'data-v-' + scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = shadowMode
+      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
+      : injectStyles
+  }
+
+  if (hook) {
+    if (options.functional) {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      var originalRender = options.render
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return originalRender(h, context)
+      }
+    } else {
+      // inject component registration as beforeCreate hook
+      var existing = options.beforeCreate
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    }
+  }
+
+  return {
+    exports: scriptExports,
+    options: options
+  }
+}
+
+// CONCATENATED MODULE: ./src/RenderlessLaravelVuePagination.vue
+var RenderlessLaravelVuePagination_render, RenderlessLaravelVuePagination_staticRenderFns
+
+
+
+
+/* normalize component */
+
+var component = normalizeComponent(
+  src_RenderlessLaravelVuePaginationvue_type_script_lang_js_,
+  RenderlessLaravelVuePagination_render,
+  RenderlessLaravelVuePagination_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var RenderlessLaravelVuePagination = (component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/LaravelVuePagination.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ var LaravelVuePaginationvue_type_script_lang_js_ = ({
+  props: {
+    data: {
+      type: Object,
+      default: function _default() {}
+    },
+    limit: {
+      type: Number,
+      default: 0
+    },
+    showDisabled: {
+      type: Boolean,
+      default: false
+    },
+    size: {
+      type: String,
+      default: 'default',
+      validator: function validator(value) {
+        return ['small', 'default', 'large'].indexOf(value) !== -1;
+      }
+    },
+    align: {
+      type: String,
+      default: 'left',
+      validator: function validator(value) {
+        return ['left', 'center', 'right'].indexOf(value) !== -1;
+      }
+    }
+  },
+  methods: {
+    onPaginationChangePage: function onPaginationChangePage(page) {
+      this.$emit('pagination-change-page', page);
+    }
+  },
+  components: {
+    RenderlessLaravelVuePagination: RenderlessLaravelVuePagination
+  }
+});
+// CONCATENATED MODULE: ./src/LaravelVuePagination.vue?vue&type=script&lang=js&
+ /* harmony default export */ var src_LaravelVuePaginationvue_type_script_lang_js_ = (LaravelVuePaginationvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./src/LaravelVuePagination.vue
+
+
+
+
+
+/* normalize component */
+
+var LaravelVuePagination_component = normalizeComponent(
+  src_LaravelVuePaginationvue_type_script_lang_js_,
+  render,
+  staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var LaravelVuePagination = (LaravelVuePagination_component.exports);
+// CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/entry-lib.js
+
+
+/* harmony default export */ var entry_lib = __webpack_exports__["default"] = (LaravelVuePagination);
+
+
+
+/***/ })
+
+/******/ })["default"];
+//# sourceMappingURL=laravel-vue-pagination.common.js.map
 
 /***/ }),
 
@@ -38875,1207 +38401,6 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ "./node_modules/simple-vue-validator/node_modules/deep-equal/index.js":
-/*!****************************************************************************!*\
-  !*** ./node_modules/simple-vue-validator/node_modules/deep-equal/index.js ***!
-  \****************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var pSlice = Array.prototype.slice;
-var objectKeys = __webpack_require__(/*! ./lib/keys.js */ "./node_modules/simple-vue-validator/node_modules/deep-equal/lib/keys.js");
-var isArguments = __webpack_require__(/*! ./lib/is_arguments.js */ "./node_modules/simple-vue-validator/node_modules/deep-equal/lib/is_arguments.js");
-
-var deepEqual = module.exports = function (actual, expected, opts) {
-  if (!opts) opts = {};
-  // 7.1. All identical values are equivalent, as determined by ===.
-  if (actual === expected) {
-    return true;
-
-  } else if (actual instanceof Date && expected instanceof Date) {
-    return actual.getTime() === expected.getTime();
-
-  // 7.3. Other pairs that do not both pass typeof value == 'object',
-  // equivalence is determined by ==.
-  } else if (!actual || !expected || typeof actual != 'object' && typeof expected != 'object') {
-    return opts.strict ? actual === expected : actual == expected;
-
-  // 7.4. For all other Object pairs, including Array objects, equivalence is
-  // determined by having the same number of owned properties (as verified
-  // with Object.prototype.hasOwnProperty.call), the same set of keys
-  // (although not necessarily the same order), equivalent values for every
-  // corresponding key, and an identical 'prototype' property. Note: this
-  // accounts for both named and indexed properties on Arrays.
-  } else {
-    return objEquiv(actual, expected, opts);
-  }
-}
-
-function isUndefinedOrNull(value) {
-  return value === null || value === undefined;
-}
-
-function isBuffer (x) {
-  if (!x || typeof x !== 'object' || typeof x.length !== 'number') return false;
-  if (typeof x.copy !== 'function' || typeof x.slice !== 'function') {
-    return false;
-  }
-  if (x.length > 0 && typeof x[0] !== 'number') return false;
-  return true;
-}
-
-function objEquiv(a, b, opts) {
-  var i, key;
-  if (isUndefinedOrNull(a) || isUndefinedOrNull(b))
-    return false;
-  // an identical 'prototype' property.
-  if (a.prototype !== b.prototype) return false;
-  //~~~I've managed to break Object.keys through screwy arguments passing.
-  //   Converting to array solves the problem.
-  if (isArguments(a)) {
-    if (!isArguments(b)) {
-      return false;
-    }
-    a = pSlice.call(a);
-    b = pSlice.call(b);
-    return deepEqual(a, b, opts);
-  }
-  if (isBuffer(a)) {
-    if (!isBuffer(b)) {
-      return false;
-    }
-    if (a.length !== b.length) return false;
-    for (i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) return false;
-    }
-    return true;
-  }
-  try {
-    var ka = objectKeys(a),
-        kb = objectKeys(b);
-  } catch (e) {//happens when one is a string literal and the other isn't
-    return false;
-  }
-  // having the same number of owned properties (keys incorporates
-  // hasOwnProperty)
-  if (ka.length != kb.length)
-    return false;
-  //the same set of keys (although not necessarily the same order),
-  ka.sort();
-  kb.sort();
-  //~~~cheap key test
-  for (i = ka.length - 1; i >= 0; i--) {
-    if (ka[i] != kb[i])
-      return false;
-  }
-  //equivalent values for every corresponding key, and
-  //~~~possibly expensive deep test
-  for (i = ka.length - 1; i >= 0; i--) {
-    key = ka[i];
-    if (!deepEqual(a[key], b[key], opts)) return false;
-  }
-  return typeof a === typeof b;
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/simple-vue-validator/node_modules/deep-equal/lib/is_arguments.js":
-/*!***************************************************************************************!*\
-  !*** ./node_modules/simple-vue-validator/node_modules/deep-equal/lib/is_arguments.js ***!
-  \***************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var supportsArgumentsClass = (function(){
-  return Object.prototype.toString.call(arguments)
-})() == '[object Arguments]';
-
-exports = module.exports = supportsArgumentsClass ? supported : unsupported;
-
-exports.supported = supported;
-function supported(object) {
-  return Object.prototype.toString.call(object) == '[object Arguments]';
-};
-
-exports.unsupported = unsupported;
-function unsupported(object){
-  return object &&
-    typeof object == 'object' &&
-    typeof object.length == 'number' &&
-    Object.prototype.hasOwnProperty.call(object, 'callee') &&
-    !Object.prototype.propertyIsEnumerable.call(object, 'callee') ||
-    false;
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/simple-vue-validator/node_modules/deep-equal/lib/keys.js":
-/*!*******************************************************************************!*\
-  !*** ./node_modules/simple-vue-validator/node_modules/deep-equal/lib/keys.js ***!
-  \*******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-exports = module.exports = typeof Object.keys === 'function'
-  ? Object.keys : shim;
-
-exports.shim = shim;
-function shim (obj) {
-  var keys = [];
-  for (var key in obj) keys.push(key);
-  return keys;
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/simple-vue-validator/src/index.js":
-/*!********************************************************!*\
-  !*** ./node_modules/simple-vue-validator/src/index.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var ValidationBag = __webpack_require__(/*! ./validation-bag */ "./node_modules/simple-vue-validator/src/validation-bag.js");
-var Rule = __webpack_require__(/*! ./rule */ "./node_modules/simple-vue-validator/src/rule.js");
-var Validator = __webpack_require__(/*! ./validator */ "./node_modules/simple-vue-validator/src/validator.js");
-var mixin = __webpack_require__(/*! ./mixin */ "./node_modules/simple-vue-validator/src/mixin.js");
-var utils = __webpack_require__(/*! ./utils */ "./node_modules/simple-vue-validator/src/utils.js");
-
-/* plugin install
- ----------------------------------- */
-
-function install(Vue, options) {
-  Vue.mixin(mixin);
-  if (options && options.templates) {
-    extendTemplates(options.templates);
-  }
-  if (options && options.mode) {
-    setMode(options.mode);
-  }
-  if (options && options.Promise) {
-    mixin.Promise = options.Promise;
-  }
-}
-
-function extendTemplates(newTemplates) {
-  Object.keys(newTemplates).forEach(function (key) {
-    utils.templates[key] = newTemplates[key];
-  });
-}
-
-function setMode(mode) {
-  if (mode !== 'interactive' && mode !== 'conservative' && mode !== 'manual') {
-    throw new Error('Invalid mode: ' + mode);
-  }
-  utils.mode = mode;
-}
-
-/* exports
- ----------------------------------- */
-
-module.exports.name = 'SimpleVueValidator';
-module.exports.ValidationBag = ValidationBag;
-module.exports.Rule = Rule;
-module.exports.Validator = Validator;
-module.exports.mixin = mixin;
-module.exports.install = install;
-module.exports.extendTemplates = extendTemplates;
-module.exports.setMode = setMode;
-
-
-/***/ }),
-
-/***/ "./node_modules/simple-vue-validator/src/mixin.js":
-/*!********************************************************!*\
-  !*** ./node_modules/simple-vue-validator/src/mixin.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(/*! ./utils */ "./node_modules/simple-vue-validator/src/utils.js");
-var ValidationBag = __webpack_require__(/*! ./validation-bag */ "./node_modules/simple-vue-validator/src/validation-bag.js");
-
-var mixin = {
-
-  Promise: null,
-
-  beforeMount: function () {
-    this.$setValidators(this.$options.validators);
-
-    if (this.validation) {
-      // set vm to validation
-      this.validation._setVM(this);
-    }
-  },
-
-  beforeDestroy: function () {
-    unwatch(this.$options.validatorsUnwatchCallbacks);
-  },
-
-  data: function () {
-    if (this.$options.validators) {
-      return {
-        validation: new ValidationBag()
-      };
-    }
-    return {};
-  },
-
-  methods: {
-    $setValidators: function (validators) {
-      unwatch(this.$options.validatorsUnwatchCallbacks);
-      // validate methods contains all application validate codes
-      var validateMethods = {};
-      this.$options.validateMethods = validateMethods;
-      var unwatchCallbacks = [];
-      this.$options.validatorsUnwatchCallbacks = unwatchCallbacks;
-      // generate validate methods and watch properties change for validators
-      if (validators) {
-        Object.keys(validators).forEach(function (key) {
-          var properties = key.split(',');
-          properties = properties.map(function (property) {
-            return property.trim();
-          });
-          var getters = properties.map(function (property) {
-            return generateGetter(this, property);
-          }, this);
-          var validator = validators[key];
-          var options = {};
-          if (!utils.isFunction(validator)) {
-            options = utils.omit(validator, 'validator');
-            validator = validator.validator;
-          }
-          if (options.cache) {
-            // cache the validation result, so that async validator can be fast when submitting the form
-            var option = options.cache === 'last' ? 'last' : 'all';
-            validator = cache(validator, option);
-          }
-          var validation = this.validation;
-          var validateMethod = function () {
-            if (utils.mode === 'conservative' && !validation.activated) { // do nothing if in conservative mode and $validate() method is not called before
-              return getPromise().resolve(false);
-            }
-            var args = getters.map(function (getter) {
-              return getter();
-            });
-            var rule = validator.apply(this, args);
-            if (rule) {
-              if (!rule._field) {
-                // field defaults to the first property
-                rule.field(properties[0]);
-              }
-              return this.validation.checkRule(rule);
-            } else {
-              return getPromise().resolve(false);
-            }
-          }.bind(this);
-
-          // add to validate method list
-          validateMethods[properties[0]] = validateMethod;
-
-          // watch change and invoke validate method
-          var validateMethodForWatch = validateMethod;
-          if (options.debounce) {
-            // TODO what if custom field name is used?
-            var decoratedValidateMethod = function () {
-              if (decoratedValidateMethod.sessionId !== this.validation.sessionId) {
-                // skip validation if it's reset before
-                return getPromise().resolve(false);
-              }
-              return validateMethod.apply(this, arguments);
-            }.bind(this);
-            var debouncedValidateMethod = utils.debounce(decoratedValidateMethod, parseInt(options.debounce));
-            var field = properties[0];
-            validateMethodForWatch = function () {
-              // eagerly resetting passed flag if debouncing is used.
-              this.validation.resetPassed(field);
-              // store sessionId
-              decoratedValidateMethod.sessionId = this.validation.sessionId;
-              debouncedValidateMethod.apply(this, arguments);
-            }.bind(this);
-          }
-          if (utils.mode !== 'manual') { // have to call $validate() to trigger validation in manual mode, so don't watch,
-            watchProperties(this, properties, validateMethodForWatch).forEach(function (unwatch) {
-              unwatchCallbacks.push(unwatch);
-            });
-          }
-        }, this);
-      }
-    },
-    $validate: function (fields) {
-      if (this.validation._validate) {
-        return this.validation._validate;
-      }
-      this.validation.activated = true;
-      var validateMethods = this.$options.validateMethods;
-      if (utils.isUndefined(fields)) {
-        validateMethods = Object.keys(validateMethods).map(function (key) {
-          return validateMethods[key];
-        });
-      } else {
-        fields = utils.isArray(fields) ? fields : [fields];
-        validateMethods = fields.map(function (field) {
-          return validateMethods[field];
-        });
-      }
-      if (utils.isEmpty(validateMethods)) {
-        return getPromise().resolve(true);
-      } else {
-        var always = function() {
-          this.validation._validate = null;
-        }.bind(this);
-        this.validation._validate = getPromise()
-          .all(validateMethods.map(function (validateMethod) {
-            return validateMethod();
-          }))
-          .then(function (results) {
-            always();
-            return results.filter(function (result) {
-                return !!result;
-              }).length <= 0;
-          }.bind(this))
-          .catch(function(e) {
-            always();
-            throw e;
-          });
-        return this.validation._validate;
-      }
-    }
-  }
-};
-
-function unwatch(list) {
-  if (list) {
-    list.forEach(function (unwatch) {
-      unwatch();
-    });
-  }
-}
-
-function generateGetter(vm, property) {
-  var names = property.split('.');
-  return function () {
-    var value = vm;
-    for (var i = 0; i < names.length; i++) {
-      if (utils.isNull(value) || utils.isUndefined(value)) {
-        break;
-      }
-      value = value[names[i]];
-    }
-    return value;
-  };
-}
-
-function watchProperties(vm, properties, callback) {
-  return properties.map(function (property) {
-    return vm.$watch(property, function () {
-      vm.validation.setTouched(property);
-      callback.call();
-    });
-  });
-}
-
-function cache(validator, option) {
-  return function () {
-    var cache = validator.cache;
-    if (!cache) {
-      cache = [];
-      validator.cache = cache;
-    }
-    var args = Array.prototype.slice.call(arguments);
-    var cachedResult = findInCache(cache, args);
-    if (!utils.isUndefined(cachedResult)) {
-      return cachedResult;
-    }
-    var result = validator.apply(this, args);
-    if (!utils.isUndefined(result)) {
-      if (result.then) {
-        return result.tab(function (promiseResult) {
-          if (!utils.isUndefined(promiseResult)) {
-            if (option !== 'all') {
-              cache.splice(0, cache.length);
-            }
-            cache.push({args: args, result: promiseResult});
-          }
-        });
-      } else {
-        if (option !== 'all') {
-          cache.splice(0, cache.length);
-        }
-        cache.push({args: args, result: result});
-        return result;
-      }
-    }
-  };
-}
-
-function getPromise() {
-  if (mixin.Promise) {
-    return mixin.Promise;
-  }
-  return __webpack_require__(/*! es6-promise */ "./node_modules/es6-promise/dist/es6-promise.js").Promise;
-}
-
-function findInCache(cache, args) {
-  var items = cache.filter(function (item) {
-    return utils.isEqual(args, item.args);
-  });
-  if (!utils.isEmpty(items)) {
-    return items[0].result;
-  }
-}
-
-module.exports = mixin;
-
-
-/***/ }),
-
-/***/ "./node_modules/simple-vue-validator/src/rule.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/simple-vue-validator/src/rule.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(/*! ./utils */ "./node_modules/simple-vue-validator/src/utils.js");
-
-function Rule(templates) {
-  this._field  = '';
-  this._value = undefined;
-  this._messages = [];
-  if (templates) {
-    // merge given template and utils.template
-    this.templates = {};
-    Object.keys(utils.templates).forEach(function (key) {
-      this.templates[key] = utils.templates[key];
-    }.bind(this));
-    Object.keys(templates).forEach(function (key) {
-      this.templates[key] = templates[key];
-    }.bind(this));
-  } else {
-    this.templates = utils.templates;
-  }
-}
-
-Rule.prototype.field = function (field) {
-  this._field  = field;
-  return this;
-};
-
-Rule.prototype.value = function (value) {
-  this._value = value;
-  return this;
-};
-
-Rule.prototype.custom = function (callback, context) {
-  var message = context ? callback.call(context) : callback();
-  if (message) {
-    if (message.then) {
-      var that = this;
-      message = Promise.resolve(message)
-        .then(function (result) {
-          return result;
-        })
-        .catch(function (e) {
-          console.error(e.toString());
-          return that.templates.error;
-        });
-    }
-    this._messages.push(message);
-  }
-  return this;
-};
-
-Rule.prototype._checkValue = function() {
-  if (this._value === undefined) {
-    throw new Error('Validator.value not set');
-  }
-  return this._value;
-};
-
-Rule.prototype.required = function (message) {
-  var value = this._checkValue();
-  if (utils.isEmpty(value)) {
-    this._messages.push(message || this.templates.required);
-  }
-  return this;
-};
-
-Rule.prototype.float = function (message) {
-    var value = this._checkValue();
-    var regex = /^([-+])?([0-9]+(\.[0-9]+)?|Infinity)$/;
-    if (!utils.isEmpty(value) && !regex.test(value)) {
-        this._messages.push(message || this.templates.float);
-    }
-    return this;
-};
-
-Rule.prototype.integer = function (message) {
-    var value = this._checkValue();
-    var regex = /^([-+])?([0-9]+|Infinity)$/;
-    if (!utils.isEmpty(value) && !regex.test(value)) {
-        this._messages.push(message || this.templates.integer);
-    }
-    return this;
-};
-
-Rule.prototype.lessThan = function (bound, message) {
-  var value = this._checkValue();
-  if (!utils.isEmpty(value)) {
-    var number = parseFloat(value);
-    if (utils.isNaN(number)) {
-      this._messages.push(message || this.templates.number);
-    } else if (number >= bound) {
-      this._messages.push(message || utils.format(this.templates.lessThan, bound));
-    }
-  }
-  return this;
-};
-
-Rule.prototype.lessThanOrEqualTo = function (bound, message) {
-    var value = this._checkValue();
-    if (!utils.isEmpty(value)) {
-        var number = parseFloat(value);
-        if (utils.isNaN(number)) {
-            this._messages.push(message || this.templates.number);
-        } else if (number > bound) {
-            this._messages.push(message || utils.format(this.templates.lessThanOrEqualTo, bound));
-        }
-    }
-    return this;
-};
-
-Rule.prototype.greaterThan = function (bound, message) {
-    var value = this._checkValue();
-    if (!utils.isEmpty(value)) {
-        var number = parseFloat(value);
-        if (utils.isNaN(number)) {
-            this._messages.push(message || this.templates.number);
-        } else if (number <= bound) {
-            this._messages.push(message || utils.format(this.templates.greaterThan, bound));
-        }
-    }
-    return this;
-};
-
-Rule.prototype.greaterThanOrEqualTo = function (bound, message) {
-    var value = this._checkValue();
-    if (!utils.isEmpty(value)) {
-        var number = parseFloat(value);
-        if (utils.isNaN(number)) {
-            this._messages.push(message || this.templates.number);
-        } else if (number < bound) {
-            this._messages.push(message || utils.format(this.templates.greaterThanOrEqualTo, bound));
-        }
-    }
-    return this;
-};
-
-Rule.prototype.between = function (lowBound, highBound, message) {
-    var value = this._checkValue();
-    if (!utils.isEmpty(value)) {
-        var number = parseFloat(value);
-        if (utils.isNaN(number)) {
-            this._messages.push(message || this.templates.number);
-        } else if (number < lowBound || number > highBound) {
-            this._messages.push(message || utils.format(this.templates.between, lowBound, highBound));
-        }
-    }
-    return this;
-};
-
-Rule.prototype.size = function (size, message) {
-    var value = this._checkValue();
-    if (!utils.isEmpty(value) && utils.isArray(value) && value.length !== size) {
-        this._messages.push(message || utils.format(this.templates.size, size));
-    }
-    return this;
-};
-
-Rule.prototype.length = function (length, message) {
-    var value = this._checkValue();
-    if (!utils.isEmpty(value) && String(value).length !== length) {
-        this._messages.push(message || utils.format(this.templates.length, length));
-    }
-    return this;
-};
-
-Rule.prototype.minLength = function (length, message) {
-    var value = this._checkValue();
-    if (!utils.isEmpty(value) && String(value).length < length) {
-        this._messages.push(message || utils.format(this.templates.minLength, length));
-    }
-    return this;
-};
-
-Rule.prototype.maxLength = function (length, message) {
-    var value = this._checkValue();
-    if (!utils.isEmpty(value) && String(value).length > length) {
-        this._messages.push(message || utils.format(this.templates.maxLength, length));
-
-    }
-    return this;
-};
-
-Rule.prototype.lengthBetween = function (minLength, maxLength, message) {
-    var value = this._checkValue();
-    if (!utils.isEmpty(value)) {
-        var string = String(value);
-        if (string.length < minLength || string.length > maxLength) {
-            this._messages.push(message || utils.format(this.templates.lengthBetween, minLength, maxLength));
-        }
-    }
-    return this;
-};
-
-Rule.prototype.in = function (options, message) {
-    var value = this._checkValue();
-    if (!utils.isEmpty(value) && options.indexOf(value) < 0) {
-        this._messages.push(message || utils.format(this.templates.in, this.templates.optionCombiner(options)));
-    }
-    return this;
-};
-
-Rule.prototype.notIn = function (options, message) {
-    var value = this._checkValue();
-    if (!utils.isEmpty(value) && options.indexOf(value) >= 0) {
-        this._messages.push(message || utils.format(this.templates.notIn, this.templates.optionCombiner(options)));
-    }
-    return this;
-};
-
-Rule.prototype.match = function (valueToCompare, message) {
-    var value = this._checkValue();
-    if (!utils.isEmpty(value) && value !== valueToCompare) {
-        this._messages.push(message || this.templates.match);
-    }
-    return this;
-};
-
-Rule.prototype.regex = function (regex, message) {
-    var value = this._checkValue();
-    if (!utils.isEmpty(value)) {
-        if (utils.isString(regex)) {
-            regex = new RegExp(regex);
-        }
-        if (!regex.test(value)) {
-            this._messages.push(message || this.templates.regex);
-        }
-    }
-    return this;
-};
-
-Rule.prototype.digit = function (message) {
-    return this.regex(/^\d*$/, message || this.templates.digit);
-};
-
-Rule.prototype.email = function (message) {
-    return this.regex(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message || this.templates.email);
-};
-
-Rule.prototype.url = function (message) {
-    return this.regex(/(http|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/, message || this.templates.url);
-};
-
-Rule.prototype.hasImmediateError = function () {
-  for (var i = 0; i < this._messages.length; i++) {
-    if (this._messages[i] && !this._messages[i].then) {
-      return true;
-    }
-  }
-  return false;
-};
-
-module.exports = Rule;
-
-
-
-/***/ }),
-
-/***/ "./node_modules/simple-vue-validator/src/templates.js":
-/*!************************************************************!*\
-  !*** ./node_modules/simple-vue-validator/src/templates.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-  error: 'Error.',
-  required: 'Required.',
-  float: 'Must be a number.',
-  integer: 'Must be an integer.',
-  number: 'Must be a number.',
-  lessThan: 'Must be less than {0}.',
-  lessThanOrEqualTo: 'Must be less than or equal to {0}.',
-  greaterThan: 'Must be greater than {0}.',
-  greaterThanOrEqualTo: 'Must greater than or equal to {0}.',
-  between: 'Must be between {0} and {1}.',
-  size: 'Size must be {0}.',
-  length: 'Length must be {0}.',
-  minLength: 'Must have at least {0} characters.',
-  maxLength: 'Must have up to {0} characters.',
-  lengthBetween: 'Length must between {0} and {1}.',
-  in: 'Must be {0}.',
-  notIn: 'Must not be {0}.',
-  match: 'Not matched.',
-  regex: 'Invalid format.',
-  digit: 'Must be a digit.',
-  email: 'Invalid email.',
-  url: 'Invalid url.',
-  optionCombiner: function (options) {
-    if (options.length > 2) {
-      options = [options.slice(0, options.length - 1).join(', '), options[options.length - 1]];
-    }
-    return options.join(' or ');
-  }
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/simple-vue-validator/src/utils.js":
-/*!********************************************************!*\
-  !*** ./node_modules/simple-vue-validator/src/utils.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var deepEqual = __webpack_require__(/*! deep-equal */ "./node_modules/simple-vue-validator/node_modules/deep-equal/index.js");
-
-// This implementation of debounce was taken from the blog of David Walsh.
-// See here: https://davidwalsh.name/javascript-debounce-function
-module.exports.debounce = function (func, wait, immediate) {
-  var timeout;
-
-  return function () {
-    var context = this;
-    var args = arguments;
-    var later = function () {
-      timeout = null;
-      if (!immediate) {
-        func.apply(context, args);
-      }
-    };
-
-    var callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) {
-      func.apply(context, args);
-    }
-  };
-};
-
-module.exports.format = function (template) {
-  var args = Array.prototype.slice.call(arguments, 1);
-  return template.replace(/{(\d+)}/g, function (match, number) {
-    return typeof args[number] != 'undefined' ? args[number] : match;
-  });
-};
-
-module.exports.isArray = function (arg) {
-  if (typeof Array.isArray === 'function') {
-    return Array.isArray(arg);
-  }
-
-  return Object.prototype.toString.call(arg) === '[object Array]';
-};
-
-module.exports.isEmpty = function (value) {
-  if (module.exports.isArray(value)) {
-    return !value.length;
-  } else if (value === undefined || value === null) {
-    return true;
-  } else {
-    return !String(value).trim().length;
-  }
-};
-
-module.exports.isEqual = function (o1, o2) {
-  return deepEqual(o1, o2);
-};
-
-module.exports.isFunction = function (arg) {
-  return typeof arg === 'function';
-};
-
-module.exports.isNaN = function (arg) {
-  return /^\s*$/.test(arg) || isNaN(arg);
-};
-
-module.exports.isNull = function (arg) {
-  return arg === null;
-};
-
-module.exports.isString = function (arg) {
-  return typeof arg === 'string' || arg instanceof String;
-};
-
-module.exports.isUndefined = function (arg) {
-  return typeof arg === 'undefined';
-};
-
-module.exports.omit = function omit(obj, key) {
-  var result = {};
-
-  for (var name in obj) {
-    if (name !== key) {
-      result[name] = obj[name];
-    }
-  }
-
-  return result;
-};
-
-module.exports.templates = __webpack_require__(/*! ./templates */ "./node_modules/simple-vue-validator/src/templates.js");
-
-module.exports.mode = 'interactive'; // other values: conservative and manual
-
-
-
-/***/ }),
-
-/***/ "./node_modules/simple-vue-validator/src/validation-bag.js":
-/*!*****************************************************************!*\
-  !*** ./node_modules/simple-vue-validator/src/validation-bag.js ***!
-  \*****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var Promise = __webpack_require__(/*! es6-promise */ "./node_modules/es6-promise/dist/es6-promise.js").Promise;
-
-var utils = __webpack_require__(/*! ./utils */ "./node_modules/simple-vue-validator/src/utils.js");
-
-function ValidationBag() {
-  this.sessionId = 0; // async validator will check this before adding error
-  this.resetting = 0; // do not allow to add error while reset is in progress
-  this.errors = [];
-  this.validatingRecords = [];
-  this.passedRecords = [];
-  this.touchedRecords = [];
-  this.activated = false; // set when $validate() is call, this flag works with the conservative mode
-}
-
-ValidationBag.prototype._setVM = function(vm) {
-  this._vm = vm;
-};
-
-ValidationBag.prototype.addError = function (field, message) {
-  if (this.resetting) {
-    return;
-  }
-  this.errors.push({field: field, message: message});
-};
-
-ValidationBag.prototype.removeErrors = function (field) {
-  if (utils.isUndefined(field)) {
-    this.errors = [];
-  } else {
-    this.errors = this.errors.filter(function (e) {
-      return e.field !== field;
-    });
-  }
-};
-
-ValidationBag.prototype.hasError = function (field) {
-  return utils.isUndefined(field) ? !!this.errors.length : !!this.firstError(field);
-};
-
-ValidationBag.prototype.firstError = function (field) {
-  for (var i = 0; i < this.errors.length; i++) {
-    if (utils.isUndefined(field) || this.errors[i].field === field) {
-      return this.errors[i].message;
-    }
-  }
-  return null;
-};
-
-ValidationBag.prototype.allErrors = function (field) {
-  return this.errors
-    .filter(function (e) {
-      return utils.isUndefined(field) || e.field === field;
-    })
-    .map(function (e) {
-      return e.message;
-    });
-};
-
-ValidationBag.prototype.countErrors = function (field) {
-  return utils.isUndefined(field) ? this.errors.length : this.errors.filter(function (e) {
-    return field === e.field;
-  }).length;
-};
-
-ValidationBag.prototype.setValidating = function (field, id) {
-  if (this.resetting) {
-    return;
-  }
-  id = id || ValidationBag.newValidatingId();
-  var existingValidatingRecords = this.validatingRecords.filter(function (validating) {
-    return validating.field === field && validating.id === id;
-  });
-  if (!utils.isEmpty(existingValidatingRecords)) {
-    throw new Error('Validating id already set: ' + id);
-  }
-  this.validatingRecords.push({field: field, id: id});
-  return id;
-};
-
-ValidationBag.prototype.resetValidating = function (field, id) {
-  if (!field) {
-    this.validatingRecords = [];
-    return;
-  }
-
-  function idMatched(validating) {
-    return utils.isUndefined(id) ? true : (validating.id === id);
-  }
-
-  var hasMore = true;
-  while (hasMore) {
-    var index = -1;
-    for (var i = 0; i < this.validatingRecords.length; i++) {
-      if (this.validatingRecords[i].field === field && idMatched(this.validatingRecords[i])) {
-        index = i;
-        break;
-      }
-    }
-    if (index >= 0) {
-      this.validatingRecords.splice(index, 1);
-    } else {
-      hasMore = false;
-    }
-  }
-};
-
-ValidationBag.prototype.isValidating = function (field, id) {
-  function idMatched(validating) {
-    return utils.isUndefined(id) ? true : (validating.id === id);
-  }
-
-  var existingValidatingRecords = this.validatingRecords.filter(function (validating) {
-    return (utils.isUndefined(field) || validating.field === field) && idMatched(validating);
-  });
-  return !utils.isEmpty(existingValidatingRecords);
-};
-
-ValidationBag.prototype.setPassed = function (field) {
-  if (this.resetting) {
-    return;
-  }
-  setValue(this.passedRecords, field);
-};
-
-ValidationBag.prototype.resetPassed = function (field) {
-  resetValue(this.passedRecords, field);
-};
-
-ValidationBag.prototype.isPassed = function (field) {
-  return isValueSet(this.passedRecords, field);
-};
-
-ValidationBag.prototype.setTouched = function (field) {
-  if (this.resetting) {
-    return;
-  }
-  setValue(this.touchedRecords, field);
-};
-
-ValidationBag.prototype.resetTouched = function (field) {
-  resetValue(this.touchedRecords, field);
-};
-
-ValidationBag.prototype.isTouched = function (field) {
-  return isValueSet(this.touchedRecords, field);
-};
-
-function setValue(records, field) {
-  var existingRecords = records.filter(function (record) {
-    return record.field === field;
-  });
-  if (!utils.isEmpty(existingRecords)) {
-    existingRecords[0].value = true;
-  } else {
-    records.push({field: field, value: true});
-  }
-}
-
-function resetValue(records, field) {
-  if (!field) {
-    records.splice(0, records.length);
-    return;
-  }
-  var existingRecords = records.filter(function (record) {
-    return record.field === field;
-  });
-  if (!utils.isEmpty(existingRecords)) {
-    existingRecords[0].value = false;
-  }
-}
-
-function isValueSet(records, field) {
-  var existingRecords = records.filter(function (record) {
-    return record.field === field;
-  });
-  return !utils.isEmpty(existingRecords) && existingRecords[0].value;
-}
-
-ValidationBag.prototype.reset = function () {
-  this.sessionId++;
-  this.errors = [];
-  this.validatingRecords = [];
-  this.passedRecords = [];
-  this.touchedRecords = [];
-  if (this._vm) {
-    // prevent field updates at the same tick to change validation status
-    this.resetting++;
-    this._vm.$nextTick(function() {
-      this.resetting--;
-    }.bind(this));
-  }
-  this.activated = false;
-};
-
-// returns true if any error is added
-ValidationBag.prototype.setError = function (field, message) {
-  if (this.resetting) {
-    return;
-  }
-  this.removeErrors(field);
-  this.resetPassed(field);
-
-  var messages = utils.isArray(message) ? message : [message];
-  var addMessages = function (messages) {
-    var hasError = false;
-    messages.forEach(function (message) {
-      if (message) {
-        this.addError(field, message);
-        hasError = true;
-      }
-    }, this);
-    if (!hasError) {
-      this.setPassed(field);
-    }
-    return hasError;
-  }.bind(this);
-
-  var hasPromise = messages.filter(function (message) {
-      return message && message.then;
-    }).length > 0;
-  if (!hasPromise) {
-    return Promise.resolve(addMessages(messages));
-  } else {
-    // if message is promise, we are encountering async validation, set validating flag and wait for message to resolve
-    // reset previous validating status for this field
-    this.resetValidating(field);
-    var validatingId = this.setValidating(field);
-    var always = function() {
-      //console.log(validatingId + ' | ' + 'end');
-      this.resetValidating(field, validatingId);
-    }.bind(this);
-    //console.log(validatingId + ' | ' + 'start');
-    return Promise.all(messages)
-      .then(function (messages) {
-        // check if the validating id is is still valid
-        if (this.isValidating(field, validatingId)) {
-          //console.log(validatingId + ' | ' + 'processed');
-          return addMessages(messages);
-        }
-        return false;
-      }.bind(this))
-      .then(function(result) {
-        always();
-        return result;
-      })
-      .catch(function (e) {
-        always();
-        return Promise.reject(e);
-      }.bind(this));
-  }
-};
-
-ValidationBag.prototype.checkRule = function (rule) {
-  if (this.resetting) {
-    return;
-  }
-  return this.setError(rule._field, rule._messages);
-};
-
-var validatingId = 0;
-
-ValidationBag.newValidatingId = function () {
-  return (++validatingId).toString();
-};
-
-module.exports = ValidationBag;
-
-
-/***/ }),
-
-/***/ "./node_modules/simple-vue-validator/src/validator.js":
-/*!************************************************************!*\
-  !*** ./node_modules/simple-vue-validator/src/validator.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(/*! ./utils */ "./node_modules/simple-vue-validator/src/utils.js");
-var Rule = __webpack_require__(/*! ./rule */ "./node_modules/simple-vue-validator/src/rule.js");
-
-var Validator = newValidator();
-
-Validator.create = function(options) {
-  return newValidator(options);
-};
-
-function newValidator(options) {
-  options = options || {};
-  var validator = {};
-
-  // clone methods from Rule to validator
-  Object.keys(Rule.prototype).forEach(function (methodName) {
-    validator[methodName] = function () {
-      var rule = new Rule(options.templates);
-      return rule[methodName].apply(rule, arguments);
-    };
-  });
-
-  validator.isEmpty = utils.isEmpty;
-
-  validator.format = utils.format;
-
-  return validator;
-}
-
-module.exports = Validator;
-
-
-/***/ }),
-
 /***/ "./node_modules/sweetalert2/dist/sweetalert2.all.js":
 /*!**********************************************************!*\
   !*** ./node_modules/sweetalert2/dist/sweetalert2.all.js ***!
@@ -44022,6 +42347,149 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ToDoEdit.vue?vue&type=template&id=93451e0a&":
+/*!***********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ToDoEdit.vue?vue&type=template&id=93451e0a& ***!
+  \***********************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-header" }, [_vm._v("To-Do Edit ")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", [_vm._v("Title")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.todo.title,
+                    expression: "todo.title"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text", name: "title", id: "title" },
+                domProps: { value: _vm.todo.title },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.todo, "title", $event.target.value)
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", [_vm._v("Description")]),
+              _vm._v(" "),
+              _c("textarea", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.todo.description,
+                    expression: "todo.description"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text", name: "description" },
+                domProps: { value: _vm.todo.description },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.todo, "description", $event.target.value)
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", [_vm._v("Due Date")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.todo.due_at,
+                    expression: "todo.due_at"
+                  }
+                ],
+                staticClass: "form-control",
+                staticStyle: { width: "220px" },
+                attrs: { type: "date", name: "due_at" },
+                domProps: { value: _vm.todo.due_at },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.todo, "due_at", $event.target.value)
+                  }
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "modal-footer" },
+            [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-success",
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.update($event)
+                    }
+                  }
+                },
+                [_vm._v("Update")]
+              ),
+              _vm._v(" "),
+              _c(
+                "router-link",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { to: { name: "todolist" }, role: "button" }
+                },
+                [_vm._v("Cancel")]
+              )
+            ],
+            1
+          )
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ToDoList.vue?vue&type=template&id=b1d56ce2&":
 /*!***********************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ToDoList.vue?vue&type=template&id=b1d56ce2& ***!
@@ -44041,9 +42509,7 @@ var render = function() {
     _c("div", { staticClass: "row justify-content-center" }, [
       _c("div", { staticClass: "col-md-12" }, [
         _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [
-            _vm._v("To-Do List " + _vm._s(_vm.$route.params.id))
-          ]),
+          _c("div", { staticClass: "card-header" }, [_vm._v("To-Do List")]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body table-responsive p-0" }, [
             _c("table", { staticClass: "table table-hover" }, [
@@ -44053,7 +42519,15 @@ var render = function() {
                 "tbody",
                 _vm._l(_vm.todos.data, function(todo) {
                   return _c("tr", { key: todo.id }, [
-                    _c("td", [_vm._v(_vm._s(todo.title))]),
+                    todo.completed == "Y"
+                      ? _c(
+                          "td",
+                          {
+                            staticStyle: { "text-decoration": "line-through" }
+                          },
+                          [_vm._v(_vm._s(todo.title))]
+                        )
+                      : _c("td", [_vm._v(_vm._s(todo.title))]),
                     _vm._v(" "),
                     _c("td", { staticStyle: { "text-align": "center" } }, [
                       _vm._v(_vm._s(todo.due_at.substring(0, 10)))
@@ -44063,55 +42537,69 @@ var render = function() {
                       _vm._v(_vm._s(todo.completed))
                     ]),
                     _vm._v(" "),
-                    _c("td", { staticStyle: { "text-align": "center" } }, [
-                      _c(
-                        "a",
-                        {
-                          staticClass: "btn btn-success btn-sm",
-                          attrs: { href: "#", role: "button" },
-                          on: {
-                            click: function($event) {
-                              return _vm.completeTask(todo.id)
+                    _c(
+                      "td",
+                      { staticStyle: { "text-align": "center" } },
+                      [
+                        _c(
+                          "a",
+                          {
+                            staticClass: "btn btn-success btn-sm",
+                            attrs: { href: "#", role: "button" },
+                            on: {
+                              click: function($event) {
+                                return _vm.completeTask(todo.id)
+                              }
                             }
-                          }
-                        },
-                        [_vm._v("Complete")]
-                      ),
-                      _vm._v(" \n                                "),
-                      _c(
-                        "a",
-                        {
-                          staticClass: "btn btn-primary btn-sm",
-                          attrs: { href: "#", role: "button" },
-                          on: {
-                            click: function($event) {
-                              return _vm.updateTask(todo.id)
+                          },
+                          [_vm._v("Complete")]
+                        ),
+                        _vm._v(" \n                                "),
+                        _c(
+                          "router-link",
+                          {
+                            staticClass: "btn btn-primary btn-sm",
+                            attrs: {
+                              to: { name: "todoedit", params: { id: todo.id } }
                             }
-                          }
-                        },
-                        [_vm._v("Edit")]
-                      ),
-                      _vm._v(" \n                                "),
-                      _c(
-                        "a",
-                        {
-                          staticClass: "btn btn-danger btn-sm",
-                          attrs: { href: "#", role: "button" },
-                          on: {
-                            click: function($event) {
-                              return _vm.deleteTask(todo.id)
+                          },
+                          [_vm._v("Edit")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "a",
+                          {
+                            staticClass: "btn btn-danger btn-sm",
+                            attrs: { href: "#", role: "button" },
+                            on: {
+                              click: function($event) {
+                                return _vm.deleteTask(todo.id)
+                              }
                             }
-                          }
-                        },
-                        [_vm._v("Delete")]
-                      )
-                    ])
+                          },
+                          [_vm._v("Delete")]
+                        )
+                      ],
+                      1
+                    )
                   ])
                 }),
                 0
               )
             ])
-          ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "card-footer" },
+            [
+              _c("pagination", {
+                attrs: { data: _vm.todos },
+                on: { "pagination-change-page": _vm.getResults }
+              })
+            ],
+            1
+          )
         ])
       ])
     ])
@@ -59401,9 +57889,7 @@ module.exports = function(module) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js");
 /* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var simple_vue_validator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! simple-vue-validator */ "./node_modules/simple-vue-validator/src/index.js");
-/* harmony import */ var simple_vue_validator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(simple_vue_validator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./router */ "./resources/js/router.js");
+/* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./router */ "./resources/js/router.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -59426,9 +57912,6 @@ var Toast = sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a.mixin({
 });
 window.Swal = sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a;
 window.Toast = Toast;
-
-var Validator = simple_vue_validator__WEBPACK_IMPORTED_MODULE_1___default.a.Validator;
-Vue.use(simple_vue_validator__WEBPACK_IMPORTED_MODULE_1___default.a);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -59439,6 +57922,7 @@ Vue.use(simple_vue_validator__WEBPACK_IMPORTED_MODULE_1___default.a);
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
+Vue.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js"));
 Vue.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -59449,7 +57933,7 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
 
 var app = new Vue({
   el: '#app',
-  router: _router__WEBPACK_IMPORTED_MODULE_2__["default"]
+  router: _router__WEBPACK_IMPORTED_MODULE_1__["default"]
 });
 
 /***/ }),
@@ -59706,6 +58190,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/ToDoEdit.vue":
+/*!**********************************************!*\
+  !*** ./resources/js/components/ToDoEdit.vue ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ToDoEdit_vue_vue_type_template_id_93451e0a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ToDoEdit.vue?vue&type=template&id=93451e0a& */ "./resources/js/components/ToDoEdit.vue?vue&type=template&id=93451e0a&");
+/* harmony import */ var _ToDoEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ToDoEdit.vue?vue&type=script&lang=js& */ "./resources/js/components/ToDoEdit.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ToDoEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ToDoEdit_vue_vue_type_template_id_93451e0a___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ToDoEdit_vue_vue_type_template_id_93451e0a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ToDoEdit.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ToDoEdit.vue?vue&type=script&lang=js&":
+/*!***********************************************************************!*\
+  !*** ./resources/js/components/ToDoEdit.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ToDoEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ToDoEdit.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ToDoEdit.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ToDoEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ToDoEdit.vue?vue&type=template&id=93451e0a&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/ToDoEdit.vue?vue&type=template&id=93451e0a& ***!
+  \*****************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ToDoEdit_vue_vue_type_template_id_93451e0a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ToDoEdit.vue?vue&type=template&id=93451e0a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ToDoEdit.vue?vue&type=template&id=93451e0a&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ToDoEdit_vue_vue_type_template_id_93451e0a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ToDoEdit_vue_vue_type_template_id_93451e0a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/ToDoList.vue":
 /*!**********************************************!*\
   !*** ./resources/js/components/ToDoList.vue ***!
@@ -59790,21 +58343,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Dashboard__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Dashboard */ "./resources/js/components/Dashboard.vue");
 /* harmony import */ var _components_ToDoList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/ToDoList */ "./resources/js/components/ToDoList.vue");
 /* harmony import */ var _components_ToDoCreate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/ToDoCreate */ "./resources/js/components/ToDoCreate.vue");
+/* harmony import */ var _components_ToDoEdit__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/ToDoEdit */ "./resources/js/components/ToDoEdit.vue");
 
 
 vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 
 
+
 var routes = [{
+  name: "dashboard",
   path: "/dashboard/",
   component: _components_Dashboard__WEBPACK_IMPORTED_MODULE_2__["default"]
 }, {
+  name: "todolist",
   path: "/todolist/",
   component: _components_ToDoList__WEBPACK_IMPORTED_MODULE_3__["default"]
 }, {
+  name: "todocreate",
   path: "/todocreate",
   component: _components_ToDoCreate__WEBPACK_IMPORTED_MODULE_4__["default"]
+}, {
+  name: "todoedit",
+  path: "/todoedit/:id",
+  component: _components_ToDoEdit__WEBPACK_IMPORTED_MODULE_5__["default"]
 }];
 /* harmony default export */ __webpack_exports__["default"] = (new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
   mode: "history",
@@ -59834,17 +58396,6 @@ var routes = [{
 __webpack_require__(/*! /Users/onlybell/Desktop/Projects/02PHP/PHP-Laravel-ToDo/resources/js/app.js */"./resources/js/app.js");
 module.exports = __webpack_require__(/*! /Users/onlybell/Desktop/Projects/02PHP/PHP-Laravel-ToDo/resources/sass/app.scss */"./resources/sass/app.scss");
 
-
-/***/ }),
-
-/***/ 1:
-/*!***********************!*\
-  !*** vertx (ignored) ***!
-  \***********************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/* (ignored) */
 
 /***/ })
 

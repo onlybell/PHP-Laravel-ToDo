@@ -3,26 +3,27 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">To-Do Create </div>
+                    <div class="card-header">To-Do Edit </div>
 
                     <div class="card-body">
                         <div class="form-group">
                             <label>Title</label>
-                            <input v-model="form.title" type="text" name="title" id="title" class="form-control">
+                            <input v-model="todo.title" type="text" name="title" id="title" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <textarea v-model="form.description" type="text" name="description" class="form-control"></textarea>
+                            <textarea v-model="todo.description" type="text" name="description" class="form-control"></textarea>
                         </div>
                         <div class="form-group">
                             <label>Due Date</label>
-                            <input v-model="form.due_at" type="date" name="due_at" class="form-control" style="width:220px;">
+                            <input v-model="todo.due_at" type="date" name="due_at" class="form-control" style="width:220px;">
                         </div>
                     </div>
 
+
                     <div class="modal-footer">
-                        <button class="btn btn-success" @click.prevent="store">Save</button>
-                        <router-link to="/todolist" role="button" class="btn btn-primary">Cancel</router-link>
+                        <button class="btn btn-success" @click.prevent="update">Update</button>
+                        <router-link :to="{name: 'todolist'}" role="button" class="btn btn-primary">Cancel</router-link>
                     </div>
                 </div>
             </div>  
@@ -37,6 +38,7 @@
         components: {},
         data () {
             return {
+                todo: {},
                 loading: false,
                 error: false,
                 form: new Form({
@@ -47,18 +49,31 @@
             }
         },
         mounted() {
+            this.loadTodos();
         },
         methods: {
-           
-            store() {
+           loadTodos() {
+                axios.get('/api/todoEdit/'+this.$route.params.id)
+                .then(res => {
+                    this.todo = res.data;
+                    setTimeout(() => { 
+                        this.loading = false;
+                    }, 500)
+                })
+            },
+            update() {
                 this.loading = true;
-                axios.post('/api/todos', this.form)
+                axios.post('/api/todoUpdate/'+this.$route.params.id, this.todo) 
                 .then(res => {
                     if (res.data.status) {
-                        this.$router.push('todolist');
+                        this.loadTodos();
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Task has been updated'
+                        });
                     }
                     else {
-                        if (res.data.errors) {
+                        if (res.data.errors) {  
                             var str = '';
                             if (res.data.errors.title) {
                                 str += res.data.errors.title+'\n';
@@ -80,6 +95,6 @@
                     }
                 })
             }
-        }
+        },
     }
 </script>
