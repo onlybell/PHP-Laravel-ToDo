@@ -11,14 +11,14 @@
                             <tr>
                             <th style='text-align:center;'>Title</th>
                             <th style='width:120px; text-align:center;'>Due Date</th>
-                            <th style='width:120px; text-align:center;'>Completed</th>
+                            <th style='width:120px; text-align:center;'>Complete</th>
                             <th style='width:220px; text-align:center;'>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="todo in todos.data" :key="todo.id">
                                 <td v-if="todo.completed=='Y'" style="text-decoration: line-through;">{{todo.title}}</td><td v-else>{{todo.title}}</td>
-                                <td style='text-align:center;'>{{todo.due_at.substring(0,10)}}</td>
+                                <td style='text-align:center;'>{{todo.due_at}}</td>
                                 <td style='text-align:center;'>{{todo.completed}}</td>
                                 <td style='text-align:center;'>
                                     <a href="#" @click="completeTask(todo.id)" role="button" class="btn btn-success btn-sm">Complete</a>&nbsp;
@@ -56,13 +56,13 @@
             getResults(page = 1) {
               axios.get('api/todolist?page=' + page)
               .then(res => {
-                  this.todos = res.data;
+                  this.todos = res.data.data;
                 });
             },
             loadTodos() {
                 axios.get('/api/todolist/')
                 .then(res => {
-                    this.todos = res.data;
+                    this.todos = res.data.data;
                     setTimeout(() => { 
                         this.loading = false;
                     }, 500)
@@ -80,7 +80,7 @@
                         if (result.value) {
                             axios.post('/api/todoComplete/'+id)
                             .then(res => {
-                                if (res.data.status) {
+                                if (res.data.success) {
                                     this.loadTodos();
                                 }
                                 else {
@@ -102,7 +102,7 @@
                         if (result.value) {
                             axios.delete('/api/todoDelete/'+id)
                             .then(res => {
-                                if (res.data.status) {
+                                if (res.data.success) {
                                     this.loadTodos();
                                 }
                                 else {

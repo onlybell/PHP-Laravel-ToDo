@@ -26,6 +26,7 @@ Route::namespace('App\\Http\\Controllers\\API')->group(function () {
         Route::get('todoEdit/{id}', 'ToDoController@show');
         Route::delete('todoDelete/{id}', 'ToDoController@delete');
         Route::post('todoComplete/{id}', 'ToDoController@updateCompleted');
+        Route::get('tododashboard', 'ToDoController@dashboard');
         
         Route::apiResources([
             'todo' => 'ToDoController',

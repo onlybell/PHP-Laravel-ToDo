@@ -1924,9 +1924,85 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      loading: true,
+      todos: {},
+      meta: null
+    };
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.loadTodos();
+  },
+  methods: {
+    loadTodos: function loadTodos() {
+      var _this = this;
+
+      axios.get('/api/tododashboard/').then(function (res) {
+        _this.todos = res.data;
+        console.log('----->' + res.data);
+        setTimeout(function () {
+          _this.loading = false;
+        }, 500);
+      });
+    }
   }
 });
 
@@ -2011,15 +2087,26 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {},
+  // data () {
+  //     return {
+  //         loading: false,
+  //         error: false,
+  //         form: new Form({
+  //             title: "",
+  //             description: "",
+  //             due_at: ""
+  //         }),
+  //     }
+  // },
   data: function data() {
     return {
-      loading: false,
-      error: false,
-      form: new Form({
+      form: {
         title: "",
         description: "",
         due_at: ""
-      })
+      },
+      loading: false,
+      error: false
     };
   },
   mounted: function mounted() {},
@@ -2029,7 +2116,7 @@ __webpack_require__.r(__webpack_exports__);
 
       this.loading = true;
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/todos', this.form).then(function (res) {
-        if (res.data.status) {
+        if (res.data.success) {
           _this.$router.push('todolist');
         } else {
           if (res.data.errors) {
@@ -2110,13 +2197,13 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       todo: {},
-      loading: false,
-      error: false,
-      form: new Form({
+      form: {
         title: "",
         description: "",
         due_at: ""
-      })
+      },
+      loading: false,
+      error: false
     };
   },
   mounted: function mounted() {
@@ -2127,7 +2214,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/todoEdit/' + this.$route.params.id).then(function (res) {
-        _this.todo = res.data;
+        _this.todo = res.data.data;
         setTimeout(function () {
           _this.loading = false;
         }, 500);
@@ -2138,7 +2225,7 @@ __webpack_require__.r(__webpack_exports__);
 
       this.loading = true;
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/todoUpdate/' + this.$route.params.id, this.todo).then(function (res) {
-        if (res.data.status) {
+        if (res.data.success) {
           _this2.loadTodos();
 
           Toast.fire({
@@ -2243,14 +2330,14 @@ __webpack_require__.r(__webpack_exports__);
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/todolist?page=' + page).then(function (res) {
-        _this.todos = res.data;
+        _this.todos = res.data.data;
       });
     },
     loadTodos: function loadTodos() {
       var _this2 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/todolist/').then(function (res) {
-        _this2.todos = res.data;
+        _this2.todos = res.data.data;
         setTimeout(function () {
           _this2.loading = false;
         }, 500);
@@ -2269,7 +2356,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (result) {
         if (result.value) {
           axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/todoComplete/' + id).then(function (res) {
-            if (res.data.status) {
+            if (res.data.success) {
               _this3.loadTodos();
             } else {
               Swal.fire("Failed!", res.data.status, "warning");
@@ -2291,7 +2378,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (result) {
         if (result.value) {
           axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]('/api/todoDelete/' + id).then(function (res) {
-            if (res.data.status) {
+            if (res.data.success) {
               _this4.loadTodos();
             } else {
               Swal.fire("Failed!", res.data.errors, "warning");
@@ -42129,25 +42216,121 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-6 col-xl-4" }, [
+                _c(
+                  "div",
+                  { staticClass: "card mb-3 widget-content bg-midnight-bloom" },
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "widget-content-wrapper text-white" },
+                      [
+                        _vm._m(0),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "widget-content-right" }, [
+                          _c(
+                            "div",
+                            { staticClass: "widget-numbers text-white" },
+                            [_c("span", [_vm._v(_vm._s(_vm.todos.totalCount))])]
+                          )
+                        ])
+                      ]
+                    )
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-6 col-xl-4" }, [
+                _c(
+                  "div",
+                  { staticClass: "card mb-3 widget-content bg-arielle-smile" },
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "widget-content-wrapper text-white" },
+                      [
+                        _vm._m(1),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "widget-content-right" }, [
+                          _c(
+                            "div",
+                            { staticClass: "widget-numbers text-white" },
+                            [
+                              _c("span", [
+                                _vm._v(_vm._s(_vm.todos.completeCount))
+                              ])
+                            ]
+                          )
+                        ])
+                      ]
+                    )
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-6 col-xl-4" }, [
+                _c(
+                  "div",
+                  { staticClass: "card mb-3 widget-content bg-grow-early" },
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "widget-content-wrapper text-white" },
+                      [
+                        _vm._m(2),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "widget-content-right" }, [
+                          _c(
+                            "div",
+                            { staticClass: "widget-numbers text-white" },
+                            [
+                              _c("span", [
+                                _vm._v(_vm._s(_vm.todos.progressCount))
+                              ])
+                            ]
+                          )
+                        ])
+                      ]
+                    )
+                  ]
+                )
+              ])
+            ])
+          ])
+        ])
+      ])
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-md-12" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [_vm._v("Dashboard")]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v("\n                    Dashboard\n                ")
-            ])
-          ])
-        ])
-      ])
+    return _c("div", { staticClass: "widget-content-left" }, [
+      _c("div", { staticClass: "widget-heading" }, [_vm._v("Total Tasks")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "widget-content-left" }, [
+      _c("div", { staticClass: "widget-heading" }, [_vm._v("Complete")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "widget-content-left" }, [
+      _c("div", { staticClass: "widget-heading" }, [_vm._v("In Progress")])
     ])
   }
 ]
@@ -42530,7 +42713,7 @@ var render = function() {
                       : _c("td", [_vm._v(_vm._s(todo.title))]),
                     _vm._v(" "),
                     _c("td", { staticStyle: { "text-align": "center" } }, [
-                      _vm._v(_vm._s(todo.due_at.substring(0, 10)))
+                      _vm._v(_vm._s(todo.due_at))
                     ]),
                     _vm._v(" "),
                     _c("td", { staticStyle: { "text-align": "center" } }, [
@@ -42621,7 +42804,7 @@ var staticRenderFns = [
         ]),
         _vm._v(" "),
         _c("th", { staticStyle: { width: "120px", "text-align": "center" } }, [
-          _vm._v("Completed")
+          _vm._v("Complete")
         ]),
         _vm._v(" "),
         _c("th", { staticStyle: { width: "220px", "text-align": "center" } }, [

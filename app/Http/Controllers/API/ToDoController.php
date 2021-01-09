@@ -11,7 +11,7 @@ use Auth;
 use Log;
 use Validator;
 
-class ToDoController extends Controller
+class ToDoController extends BaseController
 {
     protected $user_id = '';
     protected $todo = '';
@@ -23,8 +23,38 @@ class ToDoController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
-        
+       
     }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function dashboard()
+    {
+        $this->user_id = Auth::id();
+
+        $todos = ToDo::select()
+                    ->where('user_id', '=', $this->user_id)
+                    ->get();
+        $totalCount = $todos->count();
+
+        $todosC = ToDo::select()
+                    ->where('user_id', '=', $this->user_id)
+                    ->where('completed','=','Y')
+                    ->get();
+        $completeCount = $todosC->count();
+
+        $todosP = ToDo::select()
+                    ->where('user_id', '=', $this->user_id)
+                    ->where('completed','=','N')
+                    ->get();
+        $progressCount = $todosP->count();
+
+        return response()->json(['totalCount' => $totalCount, 'completeCount' => $completeCount, 'progressCount' => $progressCount]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,7 +65,7 @@ class ToDoController extends Controller
         $this->user_id = Auth::id();
         $todos = ToDo::latest()->where('user_id', '=', $this->user_id)->orderBy('due_at','DESC')->paginate(5);
         
-        return $todos;
+        return $this->sendResponse($todos, 'To Do list');
     }
 
     /**
@@ -71,7 +101,7 @@ class ToDoController extends Controller
             'due_at'=> $request['due_at'],
         ]);
 
-        return response()->json(['status' => true]);
+        return $this->sendResponse($todo, 'Task Created Successfully');
     }
 
     /**
@@ -84,7 +114,7 @@ class ToDoController extends Controller
     {
         $todo = ToDo::findOrFail($id);
 
-        return response()->json($todo);
+        return $this->sendResponse($todo, 'Task Detail');
     }
 
     /**
@@ -116,7 +146,7 @@ class ToDoController extends Controller
 
         $todo->update($request->all());
 
-        return response()->json(['status' => true]);
+        return $this->sendResponse($todo, 'Task Updated Successfully');
     }
     
     /**
@@ -134,7 +164,7 @@ class ToDoController extends Controller
         // Update to DB
         $todo->update();
 
-        return response()->json(['status' => true]);
+        return $this->sendResponse($todo, 'Task Completed Successfully');
     }
     
     /**
@@ -148,7 +178,7 @@ class ToDoController extends Controller
 
         $todo->delete();
 
-        return response()->json(['status' => true]);
+        return $this->sendResponse($todo, 'Task Deleted Successfully');
     }
 
 }

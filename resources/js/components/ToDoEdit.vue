@@ -36,18 +36,17 @@
     
     export default {
         components: {},
-        data () {
-            return {
-                todo: {},
-                loading: false,
-                error: false,
-                form: new Form({
-                    title: "",
-                    description: "",
-                    due_at: ""
-                }),
-            }
-        },
+        data: () => ({
+            todo: {},
+            form: {
+                title: "",
+                description: "",
+                due_at: ""
+            },
+            loading: false,
+            error: false,
+        }),
+       
         mounted() {
             this.loadTodos();
         },
@@ -55,7 +54,7 @@
            loadTodos() {
                 axios.get('/api/todoEdit/'+this.$route.params.id)
                 .then(res => {
-                    this.todo = res.data;
+                    this.todo = res.data.data;
                     setTimeout(() => { 
                         this.loading = false;
                     }, 500)
@@ -65,7 +64,7 @@
                 this.loading = true;
                 axios.post('/api/todoUpdate/'+this.$route.params.id, this.todo) 
                 .then(res => {
-                    if (res.data.status) {
+                    if (res.data.success) {
                         this.loadTodos();
                         Toast.fire({
                             icon: 'success',

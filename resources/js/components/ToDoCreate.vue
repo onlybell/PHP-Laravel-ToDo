@@ -35,17 +35,26 @@
     
     export default {
         components: {},
-        data () {
-            return {
-                loading: false,
-                error: false,
-                form: new Form({
-                    title: "",
-                    description: "",
-                    due_at: ""
-                }),
-            }
-        },
+        // data () {
+        //     return {
+        //         loading: false,
+        //         error: false,
+        //         form: new Form({
+        //             title: "",
+        //             description: "",
+        //             due_at: ""
+        //         }),
+        //     }
+        // },
+        data: () => ({
+            form: {
+                title: "",
+                description: "",
+                due_at: ""
+            },
+            loading: false,
+            error: false,
+        }),
         mounted() {
         },
         methods: {
@@ -54,7 +63,7 @@
                 this.loading = true;
                 axios.post('/api/todos', this.form)
                 .then(res => {
-                    if (res.data.status) {
+                    if (res.data.success) {
                         this.$router.push('todolist');
                     }
                     else {
