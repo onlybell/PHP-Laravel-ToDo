@@ -20,14 +20,6 @@ composer install
 ```
 cp .env.example .env
 ```
-**Generate APP_KEY**
-```
-php artisan key:generate
-```
-**Passport**
-```
-php artisan passport:install
-```
 **Configure MySQL connection details in .env**
 ```
 DB_CONNECTION=mysql
@@ -40,6 +32,14 @@ DB_PASSWORD={database password}
 **Run database migrations and seeders**
 ```
 php artisan migrate
+```
+**Generate APP_KEY**
+```
+php artisan key:generate
+```
+**Passport**
+```
+php artisan passport:install
 ```
 **Run npm install**
 ```
