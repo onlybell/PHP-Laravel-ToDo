@@ -29,7 +29,7 @@ DB_DATABASE={database name}
 DB_USERNAME={database user}
 DB_PASSWORD={database password}
 ```
-**Run database migrations and seeders**
+**Run database migrations**
 ```
 php artisan migrate
 ```
