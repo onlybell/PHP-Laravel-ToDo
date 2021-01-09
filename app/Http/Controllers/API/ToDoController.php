@@ -65,13 +65,6 @@ class ToDoController extends BaseController
                     ->orderBy('due_at', 'ASC')
                     ->get();
 
-       // $arrayValue = array(array('total' => 0, 'due_at' => 'Due Date'));
-        
-        foreach ($todosP as $todo)
-        {
-            Log::info($todo->total);
-        }
-        
         return $this->sendResponse($todosP, 'To Do Chart');
     }
     
@@ -86,7 +79,7 @@ class ToDoController extends BaseController
         $todos = ToDo::select()
                     ->where('user_id', '=', $this->user_id)
                     ->orderBy('due_at','DESC')
-                    ->paginate(5);
+                    ->paginate(10);
         
         return $this->sendResponse($todos, 'To Do list');
     }
