@@ -22,6 +22,10 @@ cp .env.example .env
 ```
 php artisan key:generate
 ```
+**Passport**
+```
+php artisan passport:install
+```
 **Configure MySQL connection details in .env**
 ```
 DB_CONNECTION=mysql
