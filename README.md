@@ -1,18 +1,18 @@
-# ToDo List (with Burndown Chart) - Laravel, Vue.js & Chart.js
-Basic todo list, that allows users to register, log in, and create tasks that are saved against their account. It includes the dynamic burndown chart, that displays the number of tasks that were not yet completed at each minute in the last hour.
+# To Do List - Laravel + Vue
+## Purpose
+Basic todo list, that allows users to register, log in, and create tasks that are saved against their account. 
+
+## Basic Features
+- Laravel 8.20.1
+- Vue.js 2.6.12
+- Chart.js
+- MySql
+
 ## Installation Steps
-**Clone the repo**
-```
-https://github.com/kevinreynolds/todolist.git codechallenge && cd codechallenge
-```
+
 **Run composer install**
 ```
 composer install
-```
-**Run npm install**
-(node - v6.10.0 and npm - v3.10.10)
-```
-npm install
 ```
 **Create .env**
 ```
@@ -22,11 +22,6 @@ cp .env.example .env
 ```
 php artisan key:generate
 ```
-**Setup Timezone in .env**
-```
-APP_TZ=Pacific/Auckland
-```
-
 **Configure MySQL connection details in .env**
 ```
 DB_CONNECTION=mysql
@@ -38,21 +33,42 @@ DB_PASSWORD={database password}
 ```
 **Run database migrations and seeders**
 ```
-php artisan migrate:reset
 php artisan migrate
-php artisan db:seed
 ```
-## Running the application
-Run the application in a **Virtual Host**
+**Run npm install**
+```
+npm install
+```
+**Compile the js and sass code**
+```
+npm run dev
+```
+**Once everything is done, start a development server**
+```bash
+php artisan serve
+```
+- Then go to `http://localhost:8000` from your browser and see the app.
 
-#### Comes with couple of default users
-User credentials are as follows
-```
-1. Email: anakin@starwars.com | Password: secret
-2. Email: luke@starwars.com | Password: secret
-```
+
 ## PHPUnit Test
 To run the unit test, go to the project root and run
 ```
-phpunit
+./vendor/bin/phpunit --testsuite Feature Tests
 ```
+## Preview
+- Login
+![Login Page](/screen/img_login.png)
+- Register
+![Register Page](/screen/img_user_register.png)
+- Dashboard
+![Dashboard Page](/screen/img_dashboard.png)
+- To Do List
+![List Page](/screen/img_list.png)
+- Task Create
+![Create Page](/screen/img_create.png)
+- Task Edit
+![Edit Page](/screen/img_edit.png)
+- Task Delete
+![Delete Page](/screen/img_delete.png)
+- Complete
+![Complete Page](/screen/img_complete.png)
