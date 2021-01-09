@@ -3,10 +3,12 @@
 Basic todo list, that allows users to register, log in, and create tasks that are saved against their account. 
 
 ## Basic Features
-- Laravel 8.20.1
-- Vue.js 2.6.12
+- Laravel 8
+- Vue 2 + VueRouter + sweetalert2 + laravel-vue-pagination
+- Laravel Passport
 - Chart.js
 - MySql
+- PHPUnit Test Case
 
 ## Installation Steps
 
