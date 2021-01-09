@@ -3,10 +3,12 @@
 Basic todo list, that allows users to register, log in, and create tasks that are saved against their account. 
 
 ## Basic Features
-- Laravel 8.20.1
-- Vue.js 2.6.12
+- Laravel 8
+- Vue 2 + VueRouter + sweetalert2 + laravel-vue-pagination
+- Laravel Passport
 - Chart.js
 - MySql
+- PHPUnit Test Case
 
 ## Installation Steps
 
@@ -18,10 +20,6 @@ composer install
 ```
 cp .env.example .env
 ```
-**Generate APP_KEY**
-```
-php artisan key:generate
-```
 **Configure MySQL connection details in .env**
 ```
 DB_CONNECTION=mysql
@@ -31,9 +29,17 @@ DB_DATABASE={database name}
 DB_USERNAME={database user}
 DB_PASSWORD={database password}
 ```
-**Run database migrations and seeders**
+**Run database migrations**
 ```
 php artisan migrate
+```
+**Generate APP_KEY**
+```
+php artisan key:generate
+```
+**Passport**
+```
+php artisan passport:install
 ```
 **Run npm install**
 ```
