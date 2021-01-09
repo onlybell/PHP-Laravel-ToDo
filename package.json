@@ -25,8 +25,11 @@
         "vuejs-form": "^1.2.9"
     },
     "dependencies": {
+        "chart.js": "^2.9.4",
         "laravel-vue-pagination": "^2.3.1",
+        "moment": "^2.29.1",
         "sweetalert2": "^10.12.7",
+        "vue-chartjs": "^3.5.1",
         "vue-router": "^3.4.9"
     }
 }

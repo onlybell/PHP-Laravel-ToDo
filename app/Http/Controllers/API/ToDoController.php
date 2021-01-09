@@ -55,6 +55,26 @@ class ToDoController extends BaseController
         return response()->json(['totalCount' => $totalCount, 'completeCount' => $completeCount, 'progressCount' => $progressCount]);
     }
 
+    public function lastHour() {
+        $this->user_id = Auth::id();
+        
+        $todosP = ToDo::groupBy('due_at')
+                    ->selectRaw('count(*) as total, due_at')
+                    ->where('user_id', '=', $this->user_id)
+                    ->where('completed','=','N')
+                    ->orderBy('due_at', 'ASC')
+                    ->get();
+
+       // $arrayValue = array(array('total' => 0, 'due_at' => 'Due Date'));
+        
+        foreach ($todosP as $todo)
+        {
+            Log::info($todo->total);
+        }
+        
+        return $this->sendResponse($todosP, 'To Do Chart');
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -63,7 +83,10 @@ class ToDoController extends BaseController
     public function index()
     {
         $this->user_id = Auth::id();
-        $todos = ToDo::latest()->where('user_id', '=', $this->user_id)->orderBy('due_at','DESC')->paginate(5);
+        $todos = ToDo::select()
+                    ->where('user_id', '=', $this->user_id)
+                    ->orderBy('due_at','DESC')
+                    ->paginate(5);
         
         return $this->sendResponse($todos, 'To Do list');
     }

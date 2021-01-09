@@ -46,23 +46,13 @@
                                 </div>
                             </div>
                         </div>
-<!--
+
                         <div class="row">
-                            <div class="col-md-12 col-xl-12">
-                                <div class="tab-content">
-                                    <div class="tab-pane fade show active" id="tabs-eg-77">
-                                        <div class="card mb-3 widget-chart widget-chart2 text-left w-100">
-                                            <div class="widget-chat-wrapper-outer">
-                                                <div class="widget-chart-wrapper widget-chart-wrapper-lg opacity-10 m-0">
-                                                    <canvas id="canvas"></canvas>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col-md-12">
+                                <line-chart :chart-data="datacollection" :options="options" :width="1070" :height="500"></line-chart>
                             </div>
                         </div>
--->
+
                     </div>
                 </div>  
             </div>
@@ -71,16 +61,28 @@
 </template>
 
 <script>
+    import LineChart from './LineChart.js'
+    import moment from 'moment'
+
     export default {
+        components: {
+            LineChart
+        },
         data() {
             return {
                 loading: true,
                 todos: {},
-                meta: null
+
+                datacollection: null,
+                options: null,
+                labels: [],
+                pending_tasks_count: []
             }
         },
         mounted() {
             this.loadTodos();
+            this.setupChartOptions();
+            this.lastHour();
         },
         methods: {
             
@@ -88,11 +90,54 @@
                 axios.get('/api/tododashboard/')
                 .then(res => {
                     this.todos = res.data;
-                    console.log('----->' + res.data);
                     setTimeout(() => { 
                         this.loading = false;
                     }, 500)
                 })
+            },
+
+            setupChartOptions() {
+                this.options = {
+                    responsive: false,
+                    maintainAspectRatio: false
+                };
+            },
+            lastHour() {
+                axios.get('/api/todochart')
+                    .then((response) => {
+                        var activities = response.data.data;
+                        this.labels.push('Due Date');
+                        this.pending_tasks_count.push(0);
+
+                        activities.forEach((activity) => {
+                            this.labels.push(activity.due_at);
+                            this.pending_tasks_count.push(activity.total);
+                        }, this.labels, this.pending_tasks_count);
+
+                        this.fillData();
+                    })
+                    .catch(function (error) {
+                        console.error('Fetch Activities: ', error);
+                    });
+            },
+
+            fillData () {
+                this.datacollection = {
+                    labels: this.labels,
+                    datasets: [
+                        {
+                            label: "In Progress",
+                            pointRadius: 10,
+                            backgroundColor: '#3cba92',
+                            borderColor: '#0ba360',
+                            strokeColor: "rgba(151,187,205,1)",
+                            pointColor: "#226D82",
+                            pointBorderWidth: 2,
+                            pointBorderColor: "#5E9732",
+                            data: this.pending_tasks_count
+                        }
+                    ]
+                };
             },
             
         }
