@@ -65,11 +65,16 @@
                 axios.post('/api/todoUpdate/'+this.$route.params.id, this.todo) 
                 .then(res => {
                     if (res.data.success) {
-                        this.loadTodos();
-                        Toast.fire({
-                            icon: 'success',
-                            title: 'Task has been updated'
-                        });
+                        Swal.fire({
+                            title: 'Task has been updated',
+                            text: "",
+                            showCancelButton: false,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Okay'
+                            }).then((result) => {
+                                this.$router.push('/todolist');
+                            })
                     }
                     else {
                         if (res.data.errors) {  

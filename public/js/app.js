@@ -2132,17 +2132,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {},
-  // data () {
-  //     return {
-  //         loading: false,
-  //         error: false,
-  //         form: new Form({
-  //             title: "",
-  //             description: "",
-  //             due_at: ""
-  //         }),
-  //     }
-  // },
   data: function data() {
     return {
       form: {
@@ -2271,11 +2260,15 @@ __webpack_require__.r(__webpack_exports__);
       this.loading = true;
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/todoUpdate/' + this.$route.params.id, this.todo).then(function (res) {
         if (res.data.success) {
-          _this2.loadTodos();
-
-          Toast.fire({
-            icon: 'success',
-            title: 'Task has been updated'
+          Swal.fire({
+            title: 'Task has been updated',
+            text: "",
+            showCancelButton: false,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Okay'
+          }).then(function (result) {
+            _this2.$router.push('/todolist');
           });
         } else {
           if (res.data.errors) {

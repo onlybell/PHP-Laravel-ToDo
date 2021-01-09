@@ -35,17 +35,6 @@
     
     export default {
         components: {},
-        // data () {
-        //     return {
-        //         loading: false,
-        //         error: false,
-        //         form: new Form({
-        //             title: "",
-        //             description: "",
-        //             due_at: ""
-        //         }),
-        //     }
-        // },
         data: () => ({
             form: {
                 title: "",
