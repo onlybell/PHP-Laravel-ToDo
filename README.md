@@ -12,7 +12,7 @@ Basic todo list, that allows users to register, log in, and create tasks that ar
 
 ## Installation Steps
 
-**Clone the git repository on your computer**
+**Download the .zip file or Clone the git repository on your computer**
 ```
 git clone https://github.com/onlybell/PHP-Laravel-ToDo.git
 ```
