@@ -16,6 +16,10 @@ Basic todo list, that allows users to register, log in, and create tasks that ar
 ```
 git clone https://github.com/onlybell/PHP-Laravel-ToDo.git
 ```
+**Navigate in project folder**
+```
+cd PHP-Laravel-ToDo
+```
 **Run composer install**
 ```
 composer install
